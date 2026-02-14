@@ -8,18 +8,17 @@ const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       {/* Background Image */}
-      <div className="absolute inset-0 -z-10">
+      <div className="absolute inset-0 z-0">
         <img
           src={heroBg}
           alt="Современный дата-центр с серверами"
           className="w-full h-full object-cover"
           loading="eager"
         />
-        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/50 to-background" />
       </div>
 
-      <div className="container mx-auto px-4 lg:px-8 text-center max-w-4xl">
+      <div className="relative z-10 container mx-auto px-4 lg:px-8 text-center max-w-4xl">
         <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-border bg-secondary/50 text-xs text-muted-foreground tracking-wide uppercase">
           IT-аутсорсинг в Ташкенте
         </div>
@@ -47,7 +46,7 @@ const Hero = () => {
 
       <button
         onClick={() => scrollTo("#trust")}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-muted-foreground hover:text-foreground transition-colors animate-bounce"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 text-muted-foreground hover:text-foreground transition-colors animate-bounce"
         aria-label="Прокрутить вниз"
       >
         <ChevronDown size={28} />
