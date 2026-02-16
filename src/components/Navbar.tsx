@@ -31,7 +31,7 @@ const Navbar = () => {
       }`}
     >
       <div className="container mx-auto flex items-center justify-between h-16 px-4 lg:px-8">
-        <a href="#" className="text-xl font-bold tracking-tight text-foreground">
+        <a href="#" className="text-2xl font-bold tracking-tight text-foreground">
           Novum<span className="text-primary">Tech</span>
         </a>
 
@@ -41,7 +41,7 @@ const Navbar = () => {
             <button
               key={l.href}
               onClick={() => handleClick(l.href)}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="text-base text-foreground hover:text-primary transition-colors"
             >
               {l.label}
             </button>

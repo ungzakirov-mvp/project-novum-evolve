@@ -23,13 +23,13 @@ const Hero = () => {
           IT-аутсорсинг в Ташкенте
         </div>
 
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight mb-6">
+        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight tracking-tight mb-6">
           IT-аутсорсинг{" "}
           <span className="text-primary">для бизнеса</span>{" "}
           в Ташкенте
         </h1>
 
-        <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
+        <p className="text-xl sm:text-2xl text-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
           Берём полную ответственность за IT-инфраструктуру: стабильность, безопасность и контроль для компаний 20–100 сотрудников
         </p>
 
