@@ -1,4 +1,4 @@
-import { Phone, Mail, MapPin } from "lucide-react";
+import { Phone, Mail } from "lucide-react";
 
 const navLinks = [
   { label: "Услуги", href: "#services" },
@@ -47,15 +47,11 @@ const Footer = () => {
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <Phone size={16} className="text-primary shrink-0" />
-                +998 71 200-00-00
+                +998 99 998-17-77
               </li>
               <li className="flex items-center gap-2">
                 <Mail size={16} className="text-primary shrink-0" />
-                info@novumtech.uz
-              </li>
-              <li className="flex items-start gap-2">
-                <MapPin size={16} className="text-primary shrink-0 mt-0.5" />
-                г. Ташкент, ул. Амира Темура, 100
+                support@novumtech.uz
               </li>
             </ul>
           </div>
