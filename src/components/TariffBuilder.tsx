@@ -3,7 +3,21 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Minus, X, Send, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  Plus,
+  Minus,
+  X,
+  Send,
+  ChevronDown,
+  ChevronUp,
+  CarFront,
+  LaptopMinimal,
+  ServerCog,
+  Router,
+  Cable,
+  Cctv,
+  type LucideIcon,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 /* ─── Price List ─────────────────────────────────────────────────────────── */
@@ -20,7 +34,7 @@ interface ServiceItem {
 interface Category {
   id: string;
   label: string;
-  icon: string;
+  icon: LucideIcon;
   items: ServiceItem[];
 }
 
@@ -28,7 +42,7 @@ const CATEGORIES: Category[] = [
   {
     id: "visit",
     label: "Выезд специалиста",
-    icon: "🚗",
+    icon: CarFront,
     items: [
       { id: "visit_tashkent", name: "Выезд по Ташкенту", price: 150_000, unit: "шт.", defaultQty: 1 },
       { id: "visit_hour", name: "1 час работы", price: 350_000, unit: "час", defaultQty: 1 },
@@ -37,7 +51,7 @@ const CATEGORIES: Category[] = [
   {
     id: "pc",
     label: "ПК и ноутбуки",
-    icon: "💻",
+    icon: LaptopMinimal,
     items: [
       { id: "pc_windows", name: "Установка Windows", price: 250_000, unit: "шт.", defaultQty: 1 },
       { id: "pc_virus", name: "Проверка на вирусы", price: 150_000, unit: "шт.", defaultQty: 1 },
@@ -48,7 +62,7 @@ const CATEGORIES: Category[] = [
   {
     id: "server",
     label: "Серверные решения",
-    icon: "🖥️",
+    icon: ServerCog,
     items: [
       { id: "srv_linux", name: "Установка Linux/Unix", price: 450_000, unit: "шт.", defaultQty: 1 },
       { id: "srv_winsrv", name: "Windows Server + DNS/DHCP", price: 1_100_000, unit: "шт.", defaultQty: 1 },
@@ -60,7 +74,7 @@ const CATEGORIES: Category[] = [
   {
     id: "network",
     label: "Сетевое оборудование",
-    icon: "🔌",
+    icon: Router,
     items: [
       { id: "net_switch", name: "Коммутатор", price: 600_000, unit: "шт.", defaultQty: 1 },
       { id: "net_router", name: "Маршрутизатор", price: 600_000, unit: "шт.", defaultQty: 1 },
@@ -70,7 +84,7 @@ const CATEGORIES: Category[] = [
   {
     id: "cabling",
     label: "Монтаж СКС",
-    icon: "🔧",
+    icon: Cable,
     items: [
       { id: "sks_cable", name: "Прокладка кабеля", price: 12_000, unit: "м.", defaultQty: 10 },
       { id: "sks_socket", name: "Монтаж розетки", price: 80_000, unit: "шт.", defaultQty: 1 },
@@ -80,7 +94,7 @@ const CATEGORIES: Category[] = [
   {
     id: "cctv",
     label: "Видеонаблюдение",
-    icon: "📹",
+    icon: Cctv,
     items: [
       { id: "cctv_cam", name: "Монтаж камеры", price: 400_000, unit: "шт.", defaultQty: 1 },
       { id: "cctv_cam_high", name: "Монтаж камеры выше 3м", price: 600_000, unit: "шт.", defaultQty: 1 },
@@ -223,6 +237,7 @@ const TariffBuilder = () => {
           <div className="lg:col-span-2 space-y-4">
             {CATEGORIES.map((cat) => {
               const isOpen = !collapsed[cat.id];
+              const CategoryIcon = cat.icon;
               return (
                 <div
                   key={cat.id}
@@ -234,7 +249,9 @@ const TariffBuilder = () => {
                     className="w-full flex items-center justify-between px-6 py-4 hover:bg-primary/5 transition-colors"
                   >
                     <span className="flex items-center gap-3">
-                      <span className="text-xl">{cat.icon}</span>
+                      <span className="flex h-9 w-9 items-center justify-center rounded-full border border-primary/20 bg-gradient-to-br from-primary/20 to-primary/5 shadow-[0_10px_20px_-14px_hsl(var(--primary))]">
+                        <CategoryIcon size={18} className="text-primary" />
+                      </span>
                       <span className="font-semibold text-foreground">{cat.label}</span>
                     </span>
                     {isOpen ? (
