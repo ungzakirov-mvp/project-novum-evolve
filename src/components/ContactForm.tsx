@@ -66,7 +66,6 @@ const ContactForm = () => {
     setSubmitting(true);
 
     try {
-      // дополняем сообщение выбранным тарифом
       const planInfo = form.selected_plan ? `\nИнтересующий тариф: ${form.selected_plan}` : "";
       const fullMessage = (form.message.trim() + planInfo).trim();
 
@@ -84,15 +83,18 @@ const ContactForm = () => {
         }),
       });
 
-      const data = await resp.json().catch(() => ({} as any));
+      const data = await resp.json();
       if (!resp.ok) throw new Error((data as any)?.error || "Ошибка отправки");
 
       toast({ title: t("contact.success"), description: t("contact.success_desc") });
       setForm(initialForm);
       setErrors({});
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : t("contact.error");
-      toast({ title: t("contact.error"), description: msg, variant: "destructive" });
+    } catch (err: any) {
+      toast({
+        title: t("contact.error"),
+        description: err?.message || "Ошибка отправки",
+        variant: "destructive",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -103,123 +105,10 @@ const ContactForm = () => {
     if (errors[key]) setErrors((p) => ({ ...p, [key]: undefined }));
   };
 
-  const selectedPlanLabel = PLANS.find((p) => p.value === form.selected_plan)?.label;
-
   return (
-    <section id="contact" className="py-20 md:py-28">
-      <div ref={ref} className="section-fade-in container mx-auto px-4 lg:px-8 max-w-2xl">
-        <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">{t("contact.title")}</h2>
-          <p className="text-muted-foreground">{t("contact.subtitle")}</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-5 rounded-xl border border-border bg-card p-8">
-          {/* Honeypot */}
-          <div className="absolute -left-[9999px]" aria-hidden="true">
-            <input
-              type="text"
-              tabIndex={-1}
-              autoComplete="off"
-              value={honeypot}
-              onChange={(e) => setHoneypot(e.target.value)}
-            />
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-5">
-            <div>
-              <label className="text-sm font-medium mb-1.5 block">{t("contact.name")}</label>
-              <Input
-                value={form.name}
-                onChange={(e) => set("name", e.target.value)}
-                placeholder={t("contact.your_name")}
-                maxLength={100}
-              />
-              {errors.name && <p className="text-xs text-destructive mt-1">{errors.name}</p>}
-            </div>
-
-            <div>
-              <label className="text-sm font-medium mb-1.5 block">{t("contact.company")}</label>
-              <Input
-                value={form.company}
-                onChange={(e) => set("company", e.target.value)}
-                placeholder={t("contact.company_name")}
-                maxLength={200}
-              />
-              {errors.company && <p className="text-xs text-destructive mt-1">{errors.company}</p>}
-            </div>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-5">
-            <div>
-              <label className="text-sm font-medium mb-1.5 block">{t("contact.email")}</label>
-              <Input
-                type="email"
-                value={form.email}
-                onChange={(e) => set("email", e.target.value)}
-                placeholder="email@company.uz"
-                maxLength={255}
-              />
-              {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
-            </div>
-
-            <div>
-              <label className="text-sm font-medium mb-1.5 block">{t("contact.phone")}</label>
-              <Input
-                value={form.phone}
-                onChange={(e) => set("phone", formatPhone(e.target.value))}
-                placeholder="+998 ..."
-                maxLength={20}
-              />
-              {errors.phone && <p className="text-xs text-destructive mt-1">{errors.phone}</p>}
-            </div>
-          </div>
-
-          {/* Tariff select */}
-          <div>
-            <label className="text-sm font-medium mb-1.5 block">{t("contact.plan")}</label>
-            <Select value={form.selected_plan} onValueChange={(val) => set("selected_plan", val)}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder={t("contact.plan_none")} />
-              </SelectTrigger>
-              <SelectContent>
-                {PLANS.map((plan) => (
-                  <SelectItem key={plan.value} value={plan.value}>
-                    {plan.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{t("contact.plan_hint")}</p>
-
-            {form.selected_plan && selectedPlanLabel && (
-              <div className="mt-3 rounded-lg border border-primary/30 bg-primary/5 px-4 py-3 transition-all duration-300 animate-in fade-in slide-in-from-top-1">
-                <p className="text-sm font-medium text-primary">
-                  {t("contact.plan_selected")} {form.selected_plan}
-                </p>
-                <p className="text-xs text-muted-foreground mt-0.5">{t("contact.plan_personal")}</p>
-              </div>
-            )}
-          </div>
-
-          <div>
-            <label className="text-sm font-medium mb-1.5 block">{t("contact.comment")}</label>
-            <Textarea
-              value={form.message}
-              onChange={(e) => set("message", e.target.value)}
-              placeholder={t("contact.comment_placeholder")}
-              rows={4}
-              maxLength={2000}
-            />
-          </div>
-
-          <Button type="submit" size="lg" className="w-full py-6" disabled={submitting}>
-            {submitting ? t("contact.submitting") : t("contact.submit")}
-            {!submitting && <Send className="ml-2" size={18} />}
-          </Button>
-        </form>
-      </div>
-    </section>
+    <form onSubmit={handleSubmit}>
+      {/* ТУТ МОЖЕШЬ ОСТАВИТЬ СВОЙ JSX БЕЗ ИЗМЕНЕНИЙ */}
+    </form>
   );
 };
 
