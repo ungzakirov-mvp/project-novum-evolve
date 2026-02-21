@@ -40,6 +40,7 @@ const ContactForm = () => {
   const ref = useScrollAnimation();
   const { toast } = useToast();
   const { t } = useLanguage();
+
   const [form, setForm] = useState<FormData>(initialForm);
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -58,73 +59,33 @@ const ContactForm = () => {
     return Object.keys(e).length === 0;
   };
 
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  if (!validate()) return;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validate()) return;
 
-  setSubmitting(true);
+    setSubmitting(true);
 
-  try {
-    const planInfo = form.selected_plan ? `\nИнтересующий тариф: ${form.selected_plan}` : "";
-    const fullMessage = (form.message.trim() + planInfo).trim();
+    try {
+      // дополняем сообщение выбранным тарифом
+      const planInfo = form.selected_plan ? `\nИнтересующий тариф: ${form.selected_plan}` : "";
+      const fullMessage = (form.message.trim() + planInfo).trim();
 
-    const resp = await fetch("/api/audit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: form.name.trim(),
-        company: form.company.trim(),
-        email: form.email.trim(),
-        phone: form.phone.trim(),
-        message: fullMessage,
-        selected_plan: form.selected_plan,
-        honeypot,
-      }),
-    });
+      const resp = await fetch("/api/audit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          company: form.company.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          message: fullMessage,
+          selected_plan: form.selected_plan,
+          honeypot,
+        }),
+      });
 
-    const data = await resp.json().catch(() => ({}));
-    if (!resp.ok) throw new Error((data as any)?.error || "Ошибка отправки");
-
-    toast({ title: t("contact.success"), description: t("contact.success_desc") });
-    setForm(initialForm);
-    setErrors({});
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : t("contact.error");
-    toast({ title: t("contact.error"), description: msg, variant: "destructive" });
-  } finally {
-    setSubmitting(false);
-  }
-};
-
-    const data = await resp.json().catch(() => ({}));
-    if (!resp.ok) throw new Error(data?.error || "Ошибка отправки");
-
-    toast({ title: t("contact.success"), description: t("contact.success_desc") });
-    setForm(initialForm);
-    setErrors({});
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : t("contact.error");
-    toast({ title: t("contact.error"), description: msg, variant: "destructive" });
-  } finally {
-    setSubmitting(false);
-  }
-};
-
-  const data = await resp.json().catch(() => ({}));
-  if (!resp.ok) throw new Error(data?.error || "Ошибка отправки");
-
-  toast({ title: t("contact.success"), description: t("contact.success_desc") });
-  setForm(initialForm);
-  setErrors({});
-} catch (err: unknown) {
-  const msg = err instanceof Error ? err.message : t("contact.error");
-  toast({ title: t("contact.error"), description: msg, variant: "destructive" });
-} finally {
-  setSubmitting(false);
-}
-
-      if (error) throw error;
-      if (data && !data.success) throw new Error(data.error || "Error");
+      const data = await resp.json().catch(() => ({} as any));
+      if (!resp.ok) throw new Error((data as any)?.error || "Ошибка отправки");
 
       toast({ title: t("contact.success"), description: t("contact.success_desc") });
       setForm(initialForm);
@@ -155,18 +116,35 @@ const ContactForm = () => {
         <form onSubmit={handleSubmit} className="space-y-5 rounded-xl border border-border bg-card p-8">
           {/* Honeypot */}
           <div className="absolute -left-[9999px]" aria-hidden="true">
-            <input type="text" tabIndex={-1} autoComplete="off" value={honeypot} onChange={(e) => setHoneypot(e.target.value)} />
+            <input
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+              value={honeypot}
+              onChange={(e) => setHoneypot(e.target.value)}
+            />
           </div>
 
           <div className="grid sm:grid-cols-2 gap-5">
             <div>
               <label className="text-sm font-medium mb-1.5 block">{t("contact.name")}</label>
-              <Input value={form.name} onChange={(e) => set("name", e.target.value)} placeholder={t("contact.your_name")} maxLength={100} />
+              <Input
+                value={form.name}
+                onChange={(e) => set("name", e.target.value)}
+                placeholder={t("contact.your_name")}
+                maxLength={100}
+              />
               {errors.name && <p className="text-xs text-destructive mt-1">{errors.name}</p>}
             </div>
+
             <div>
               <label className="text-sm font-medium mb-1.5 block">{t("contact.company")}</label>
-              <Input value={form.company} onChange={(e) => set("company", e.target.value)} placeholder={t("contact.company_name")} maxLength={200} />
+              <Input
+                value={form.company}
+                onChange={(e) => set("company", e.target.value)}
+                placeholder={t("contact.company_name")}
+                maxLength={200}
+              />
               {errors.company && <p className="text-xs text-destructive mt-1">{errors.company}</p>}
             </div>
           </div>
@@ -174,9 +152,16 @@ const ContactForm = () => {
           <div className="grid sm:grid-cols-2 gap-5">
             <div>
               <label className="text-sm font-medium mb-1.5 block">{t("contact.email")}</label>
-              <Input type="email" value={form.email} onChange={(e) => set("email", e.target.value)} placeholder="email@company.uz" maxLength={255} />
+              <Input
+                type="email"
+                value={form.email}
+                onChange={(e) => set("email", e.target.value)}
+                placeholder="email@company.uz"
+                maxLength={255}
+              />
               {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
             </div>
+
             <div>
               <label className="text-sm font-medium mb-1.5 block">{t("contact.phone")}</label>
               <Input
@@ -204,6 +189,7 @@ const ContactForm = () => {
                 ))}
               </SelectContent>
             </Select>
+
             <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{t("contact.plan_hint")}</p>
 
             {form.selected_plan && selectedPlanLabel && (
@@ -218,7 +204,13 @@ const ContactForm = () => {
 
           <div>
             <label className="text-sm font-medium mb-1.5 block">{t("contact.comment")}</label>
-            <Textarea value={form.message} onChange={(e) => set("message", e.target.value)} placeholder={t("contact.comment_placeholder")} rows={4} maxLength={2000} />
+            <Textarea
+              value={form.message}
+              onChange={(e) => set("message", e.target.value)}
+              placeholder={t("contact.comment_placeholder")}
+              rows={4}
+              maxLength={2000}
+            />
           </div>
 
           <Button type="submit" size="lg" className="w-full py-6" disabled={submitting}>
