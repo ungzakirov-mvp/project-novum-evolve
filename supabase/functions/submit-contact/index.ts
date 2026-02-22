@@ -34,7 +34,8 @@ Deno.serve(async (req) => {
     // Validation
     if (!body.name?.trim()) throw new Error("Имя обязательно");
     if (!body.company?.trim()) throw new Error("Компания обязательна");
-    if (!body.email?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email))
+    const hasEmail = body.email?.trim() && body.email.trim() !== "—";
+    if (hasEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email!))
       throw new Error("Некорректный email");
     if (!body.phone?.trim()) throw new Error("Телефон обязателен");
     if (body.name.length > 100) throw new Error("Имя слишком длинное");
@@ -51,7 +52,7 @@ Deno.serve(async (req) => {
     const { error: dbError } = await supabase.from("contact_requests").insert({
       name: body.name.trim(),
       company: body.company.trim(),
-      email: body.email.trim(),
+      email: hasEmail ? body.email!.trim() : "",
       phone: body.phone.trim(),
       message: body.message?.trim() || null,
     });
