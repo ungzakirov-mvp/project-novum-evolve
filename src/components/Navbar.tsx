@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Globe } from "lucide-react";
+import { Menu, X, Globe, LogIn } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useLanguage, Lang } from "@/i18n/LanguageContext";
 
@@ -14,6 +15,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const { lang, setLang, t } = useLanguage();
+  const navigate = useNavigate();
 
   const navLinks = [
     { label: t("nav.services"), href: "#services" },
@@ -93,6 +95,15 @@ const Navbar = () => {
           <Button size="sm" onClick={() => handleClick("#contact")}>
             {t("nav.audit")}
           </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => navigate("/admin")}
+            className="gap-1.5"
+          >
+            <LogIn size={14} />
+            Войти
+          </Button>
         </div>
 
         {/* Mobile toggle + lang */}
@@ -148,6 +159,14 @@ const Navbar = () => {
             ))}
             <Button className="mt-2" onClick={() => handleClick("#contact")}>
               {t("nav.audit")}
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => { setOpen(false); navigate("/admin"); }}
+              className="gap-1.5"
+            >
+              <LogIn size={14} />
+              Войти
             </Button>
           </div>
         </div>
