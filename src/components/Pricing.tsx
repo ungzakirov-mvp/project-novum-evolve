@@ -220,7 +220,7 @@ const Pricing = () => {
                 }`}
                 onClick={handleCta}
               >
-                {plan.cta}
+                {t(plan.cta_key)}
               </Button>
             </div>
           ))}
