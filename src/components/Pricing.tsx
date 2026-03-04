@@ -202,7 +202,7 @@ const Pricing = () => {
               <div className="h-px bg-border mb-4" />
 
               <ul className="space-y-2.5 flex-1 mb-5">
-                {plan.extraFeatures.map((f) => (
+                {plan.extra_features.map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm text-foreground/85">
                     <Check size={14} className={`shrink-0 mt-0.5 ${plan.highlight ? "text-primary" : "text-primary/70"}`} />
                     {f}
