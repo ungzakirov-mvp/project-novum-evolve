@@ -8,6 +8,9 @@ export const translations: Translations = {
     "nav.about": "О нас",
     "nav.workflow": "Как мы работаем",
     "nav.contacts": "Контакты",
+    "nav.faq": "FAQ",
+    "nav.constructor": "Конструктор тарифа",
+    "nav.privacy": "Конфиденциальность",
     "nav.audit": "Запросить аудит",
 
     // Hero
