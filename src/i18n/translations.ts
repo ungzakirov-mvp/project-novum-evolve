@@ -261,6 +261,10 @@ export const translations: Translations = {
     "contact.your_name": "Ваше имя",
     "contact.company_name": "Название компании",
 
+    // Contacts page
+    "contacts.address_label": "Адрес",
+    "contacts.address_value": "г. Ташкент, Узбекистан",
+
     // Footer
     "footer.desc": "IT-аутсорсинг для среднего бизнеса в Ташкенте. Стабильность, безопасность и прозрачность.",
     "footer.nav": "Навигация",
