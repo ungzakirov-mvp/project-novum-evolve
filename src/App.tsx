@@ -13,6 +13,7 @@ import AdminPricing from "./pages/AdminPricing";
 import AdminServices from "./pages/AdminServices";
 import AdminRequests from "./pages/AdminRequests";
 import AdminCategories from "./pages/AdminCategories";
+import AdminReviews from "./pages/AdminReviews";
 import ServicesPage from "./pages/ServicesPage";
 import ConstructorPage from "./pages/ConstructorPage";
 import ServiceDeskPage from "./pages/ServiceDeskPage";
