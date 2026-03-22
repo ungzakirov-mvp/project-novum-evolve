@@ -10,6 +10,8 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminPricing from "./pages/AdminPricing";
+import AdminServices from "./pages/AdminServices";
+import AdminRequests from "./pages/AdminRequests";
 import ServicesPage from "./pages/ServicesPage";
 import ConstructorPage from "./pages/ConstructorPage";
 import ServiceDeskPage from "./pages/ServiceDeskPage";
@@ -40,6 +42,8 @@ const App = () => (
             <Route element={<AdminLayout />}>
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/pricing" element={<AdminPricing />} />
+              <Route path="/admin/services" element={<AdminServices />} />
+              <Route path="/admin/requests" element={<AdminRequests />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
