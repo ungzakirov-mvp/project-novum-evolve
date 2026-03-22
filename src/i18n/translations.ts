@@ -285,6 +285,9 @@ export const translations: Translations = {
     "nav.about": "Biz haqimizda",
     "nav.workflow": "Qanday ishlaymiz",
     "nav.contacts": "Aloqa",
+    "nav.faq": "FAQ",
+    "nav.constructor": "Tarif konstruktori",
+    "nav.privacy": "Maxfiylik",
     "nav.audit": "Audit so'rash",
 
     // Hero
