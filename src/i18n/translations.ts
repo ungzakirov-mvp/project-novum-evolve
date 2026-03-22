@@ -538,6 +538,10 @@ export const translations: Translations = {
     "contact.your_name": "Ismingiz",
     "contact.company_name": "Kompaniya nomi",
 
+    // Contacts page
+    "contacts.address_label": "Manzil",
+    "contacts.address_value": "Toshkent sh., O'zbekiston",
+
     // Footer
     "footer.desc": "Toshkentda o'rta biznes uchun IT-autsorsing. Barqarorlik, xavfsizlik va shaffoflik.",
     "footer.nav": "Navigatsiya",
