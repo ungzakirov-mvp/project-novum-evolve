@@ -2,9 +2,11 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
   const scrollTo = (id: string) => document.querySelector(id)?.scrollIntoView({ behavior: "smooth" });
 
   return (
@@ -36,11 +38,11 @@ const Hero = () => {
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button size="lg" className="text-base px-8 py-6" onClick={() => scrollTo("#contact")}>
+          <Button size="lg" className="text-base px-8 py-6" onClick={() => navigate("/constructor")}>
             {t("hero.cta")}
             <ArrowRight className="ml-2" size={18} />
           </Button>
-          <Button variant="outline" size="lg" className="text-base px-8 py-6" onClick={() => scrollTo("#services")}>
+          <Button variant="outline" size="lg" className="text-base px-8 py-6" onClick={() => scrollTo("#pricing")}>
             {t("hero.more")}
           </Button>
         </div>

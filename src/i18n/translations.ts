@@ -15,12 +15,12 @@ export const translations: Translations = {
 
     // Hero
     "hero.badge": "IT-аутсорсинг в Ташкенте",
-    "hero.title1": "IT-аутсорсинг",
-    "hero.title2": "для бизнеса",
+    "hero.title1": "IT-аутсорсинг для компаний",
+    "hero.title2": "5–150 рабочих мест",
     "hero.title3": "в Ташкенте",
-    "hero.desc": "Берём полную ответственность за IT-инфраструктуру: стабильность, безопасность и контроль для компаний 20–100 сотрудников",
-    "hero.cta": "Запросить IT-аудит",
-    "hero.more": "Узнать больше",
+    "hero.desc": "Поддержка по SLA, Service Desk, обслуживание рабочих мест, серверов и офисной инфраструктуры. Прозрачные тарифы, договор и понятные условия.",
+    "hero.cta": "Собрать тариф",
+    "hero.more": "Выбрать тариф",
 
     // Trust Indicators
     "trust.sla": "SLA 99.9%",
@@ -292,12 +292,12 @@ export const translations: Translations = {
 
     // Hero
     "hero.badge": "Toshkentda IT-autsorsing",
-    "hero.title1": "IT-autsorsing",
-    "hero.title2": "biznes uchun",
+    "hero.title1": "Kompaniyalar uchun IT-autsorsing",
+    "hero.title2": "5–150 ish joyi",
     "hero.title3": "Toshkentda",
-    "hero.desc": "IT-infratuzilma uchun to'liq javobgarlikni o'z zimmamizga olamiz: 20–100 xodimli kompaniyalar uchun barqarorlik, xavfsizlik va nazorat",
-    "hero.cta": "IT-audit so'rash",
-    "hero.more": "Batafsil",
+    "hero.desc": "SLA bo'yicha qo'llab-quvvatlash, Service Desk, ish joylari, serverlar va ofis infratuzilmasiga xizmat ko'rsatish. Shaffof tariflar, shartnoma va tushunarli shartlar.",
+    "hero.cta": "Tarif yig'ish",
+    "hero.more": "Tarif tanlash",
 
     // Trust Indicators
     "trust.sla": "SLA 99.9%",
@@ -569,12 +569,12 @@ export const translations: Translations = {
 
     // Hero
     "hero.badge": "IT Outsourcing in Tashkent",
-    "hero.title1": "IT Outsourcing",
-    "hero.title2": "for Business",
+    "hero.title1": "IT Outsourcing for companies",
+    "hero.title2": "5–150 workstations",
     "hero.title3": "in Tashkent",
-    "hero.desc": "We take full responsibility for your IT infrastructure: stability, security, and control for companies with 20–100 employees",
-    "hero.cta": "Request IT Audit",
-    "hero.more": "Learn More",
+    "hero.desc": "SLA-based support, Service Desk, workstation, server and office infrastructure maintenance. Transparent pricing, contracts and clear terms.",
+    "hero.cta": "Build a Plan",
+    "hero.more": "Choose a Plan",
 
     // Trust Indicators
     "trust.sla": "SLA 99.9%",
