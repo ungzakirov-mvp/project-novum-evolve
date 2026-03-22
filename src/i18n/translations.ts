@@ -292,12 +292,12 @@ export const translations: Translations = {
 
     // Hero
     "hero.badge": "Toshkentda IT-autsorsing",
-    "hero.title1": "IT-autsorsing",
-    "hero.title2": "biznes uchun",
+    "hero.title1": "Kompaniyalar uchun IT-autsorsing",
+    "hero.title2": "5–150 ish joyi",
     "hero.title3": "Toshkentda",
-    "hero.desc": "IT-infratuzilma uchun to'liq javobgarlikni o'z zimmamizga olamiz: 20–100 xodimli kompaniyalar uchun barqarorlik, xavfsizlik va nazorat",
-    "hero.cta": "IT-audit so'rash",
-    "hero.more": "Batafsil",
+    "hero.desc": "SLA bo'yicha qo'llab-quvvatlash, Service Desk, ish joylari, serverlar va ofis infratuzilmasiga xizmat ko'rsatish. Shaffof tariflar, shartnoma va tushunarli shartlar.",
+    "hero.cta": "Tarif yig'ish",
+    "hero.more": "Tarif tanlash",
 
     // Trust Indicators
     "trust.sla": "SLA 99.9%",
