@@ -10,6 +10,7 @@ export default function FAQPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="FAQ — Вопросы об IT-аутсорсинге | Novum Tech" description="Ответы на частые вопросы об IT-аутсорсинге, SLA, тарифах и условиях обслуживания от Novum Tech." canonical="https://project-novum-evolve.lovable.app/faq" />
       <Navbar />
       <main className="pt-16">
         <section className="relative py-20 lg:py-32 overflow-hidden">
