@@ -5,27 +5,21 @@ import Services from "@/components/Services";
 import Pricing from "@/components/Pricing";
 import Footer from "@/components/Footer";
 import ClientsMarquee from "@/components/ClientsMarquee";
-import { useEffect } from "react";
+import SEOHead from "@/components/SEOHead";
 import { useVisitTracker } from "@/hooks/useVisitTracker";
+
+const BASE = "https://project-novum-evolve.lovable.app";
 
 const Index = () => {
   useVisitTracker();
 
-  useEffect(() => {
-    document.title = "Novum Tech — IT-аутсорсинг для бизнеса в Ташкенте";
-    const meta = document.querySelector('meta[name="description"]');
-    if (meta) {
-      meta.setAttribute("content", "Novum Tech — IT-аутсорсинг в Ташкенте. Серверы, безопасность, поддержка рабочих станций. SLA 99.9%, реакция до 30 минут.");
-    } else {
-      const m = document.createElement("meta");
-      m.name = "description";
-      m.content = "Novum Tech — IT-аутсорсинг в Ташкенте. Серверы, безопасность, поддержка рабочих станций. SLA 99.9%, реакция до 30 минут.";
-      document.head.appendChild(m);
-    }
-  }, []);
-
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title="Novum Tech — IT-аутсорсинг для бизнеса в Ташкенте"
+        description="IT-аутсорсинг в Ташкенте. Серверы, безопасность, поддержка рабочих станций. SLA 99.9%, реакция до 30 минут."
+        canonical={`${BASE}/`}
+      />
       <Navbar />
       <main>
         <Hero />

@@ -4,6 +4,7 @@ import { useLanguage } from '@/i18n/LanguageContext';
 import ScrollReveal from '@/components/ScrollReveal';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEOHead from '@/components/SEOHead';
 import { Server, Headphones, Database, Wifi, Printer, ClipboardCheck } from 'lucide-react';
 
 const iconMap: Record<string, any> = { Server, Headphones, Database, Wifi, Printer, ClipboardCheck };
@@ -27,6 +28,7 @@ export default function ServicesPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Услуги IT-аутсорсинга — Novum Tech" description="Полный спектр IT-услуг: поддержка, серверы, сети, видеонаблюдение, IP-телефония и IT-аудит в Ташкенте." canonical="https://project-novum-evolve.lovable.app/services" />
       <Navbar />
       <main className="pt-16">
         <section className="relative py-20 lg:py-32 overflow-hidden">

@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import About from "@/components/About";
 import Workflow from "@/components/Workflow";
 import ScrollReveal from "@/components/ScrollReveal";
+import SEOHead from "@/components/SEOHead";
 import { useLanguage } from "@/i18n/LanguageContext";
 
 export default function AboutPage() {
@@ -10,6 +11,7 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="О компании Novum Tech — IT-аутсорсинг в Ташкенте" description="Команда Novum Tech: опыт, подход и процессы IT-аутсорсинга для бизнеса в Узбекистане." canonical="https://project-novum-evolve.lovable.app/about" />
       <Navbar />
       <main className="pt-16">
         <section className="relative py-20 lg:py-32 overflow-hidden">

@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ContactForm from "@/components/ContactForm";
 import ScrollReveal from "@/components/ScrollReveal";
+import SEOHead from "@/components/SEOHead";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Phone, Mail, MapPin } from "lucide-react";
 
@@ -16,6 +17,7 @@ export default function ContactsPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Контакты Novum Tech — IT-аутсорсинг в Ташкенте" description="Свяжитесь с Novum Tech: телефон, email, адрес офиса в Ташкенте. Оставьте заявку на IT-обслуживание." canonical="https://project-novum-evolve.lovable.app/contacts" />
       <Navbar />
       <main className="pt-16">
         <section className="relative py-20 lg:py-32 overflow-hidden">
