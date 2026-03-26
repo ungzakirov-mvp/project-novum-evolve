@@ -17,7 +17,7 @@ export default function ContactsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead title="Контакты Novum Tech — IT-аутсорсинг в Ташкенте" description="Свяжитесь с Novum Tech: телефон, email, адрес офиса в Ташкенте. Оставьте заявку на IT-обслуживание." canonical="https://novumtech.uz/contacts" />
+      <SEOHead title="Контакты IT компании Ташкент — Novum Tech | IT аутсорсинг" description="Свяжитесь с Novum Tech: телефон, email, адрес офиса в Ташкенте. IT аутсорсинг, обслуживание компьютеров, service desk. Бесплатная консультация." canonical="https://novumtech.uz/contacts" />
       <Navbar />
       <main className="pt-16">
         <section className="relative py-20 lg:py-32 overflow-hidden">
