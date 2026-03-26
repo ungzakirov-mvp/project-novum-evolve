@@ -1,5 +1,8 @@
 import { useLanguage } from '@/i18n/LanguageContext';
 import ScrollReveal from '@/components/ScrollReveal';
+import SEOHead from '@/components/SEOHead';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 export default function PrivacyPage() {
   const { lang } = useLanguage();
@@ -39,6 +42,10 @@ For all questions related to personal data processing, contact us at support@nov
   const l = content[lang] || content.ru;
 
   return (
+    <div className="min-h-screen bg-background">
+      <SEOHead title="Политика конфиденциальности — Novum Tech" description="Политика конфиденциальности Novum Tech: как мы собираем, используем и защищаем ваши персональные данные." canonical="https://novumtech.uz/privacy" />
+      <Navbar />
+      <main className="pt-16">
     <section className="py-16 lg:py-24">
       <div className="container mx-auto px-4 lg:px-8 max-w-3xl">
         <ScrollReveal>
@@ -51,5 +58,8 @@ For all questions related to personal data processing, contact us at support@nov
         </ScrollReveal>
       </div>
     </section>
+      </main>
+      <Footer />
+    </div>
   );
 }
