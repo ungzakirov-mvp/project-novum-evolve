@@ -1,4 +1,4 @@
-import { Phone, Mail } from "lucide-react";
+import { Phone, Mail, Send, Instagram } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 
@@ -62,6 +62,18 @@ const Footer = () => {
               <li className="flex items-center gap-2">
                 <Mail size={16} className="text-primary shrink-0" />
                 support@novumtech.uz
+              </li>
+              <li>
+                <a href="https://t.me/novumtechaza" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-foreground transition-colors">
+                  <Send size={16} className="text-primary shrink-0" />
+                  @novumtechaza
+                </a>
+              </li>
+              <li>
+                <a href="https://instagram.com/novum_tech" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-foreground transition-colors">
+                  <Instagram size={16} className="text-primary shrink-0" />
+                  novum_tech
+                </a>
               </li>
             </ul>
           </div>

@@ -4,7 +4,7 @@ import ContactForm from "@/components/ContactForm";
 import ScrollReveal from "@/components/ScrollReveal";
 import SEOHead from "@/components/SEOHead";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Phone, Mail, MapPin } from "lucide-react";
+import { Phone, Mail, MapPin, Send, Instagram } from "lucide-react";
 
 export default function ContactsPage() {
   const { t } = useLanguage();
@@ -12,6 +12,8 @@ export default function ContactsPage() {
   const infoCards = [
     { icon: Phone, label: t("footer.contacts"), value: "+998 99 998-17-77", href: "tel:+998999981777" },
     { icon: Mail, label: "Email", value: "support@novumtech.uz", href: "mailto:support@novumtech.uz" },
+    { icon: Send, label: "Telegram", value: "@novumtechaza", href: "https://t.me/novumtechaza" },
+    { icon: Instagram, label: "Instagram", value: "novum_tech", href: "https://instagram.com/novum_tech" },
     { icon: MapPin, label: t("contacts.address_label"), value: t("contacts.address_value") },
   ];
 
