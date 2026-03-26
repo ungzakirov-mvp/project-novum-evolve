@@ -8,7 +8,7 @@ import ClientsMarquee from "@/components/ClientsMarquee";
 import SEOHead from "@/components/SEOHead";
 import { useVisitTracker } from "@/hooks/useVisitTracker";
 
-const BASE = "https://project-novum-evolve.lovable.app";
+const BASE = "https://novumtech.uz";
 
 const Index = () => {
   useVisitTracker();

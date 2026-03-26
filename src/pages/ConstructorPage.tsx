@@ -6,6 +6,7 @@ import { getLocalizedField, formatPrice } from '@/i18n/helpers';
 import ScrollReveal from '@/components/ScrollReveal';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEOHead from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -183,6 +184,7 @@ export default function ConstructorPage() {
 
   return (
     <>
+      <SEOHead title="Конструктор IT-услуг — Novum Tech" description="Соберите индивидуальный тариф IT-аутсорсинга: выберите услуги, количество рабочих мест и срок обслуживания." canonical="https://novumtech.uz/constructor" />
       <Navbar />
       <section className="relative py-16 lg:py-24 overflow-hidden min-h-screen">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_0%,hsl(217,91%,60%,0.06),transparent_70%)]" />

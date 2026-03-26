@@ -1,5 +1,8 @@
 import { useLanguage } from '@/i18n/LanguageContext';
 import ScrollReveal from '@/components/ScrollReveal';
+import SEOHead from '@/components/SEOHead';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { Check, X, AlertTriangle } from 'lucide-react';
 
 export default function ServiceDeskPage() {
@@ -95,6 +98,10 @@ export default function ServiceDeskPage() {
   ];
 
   return (
+    <div className="min-h-screen bg-background">
+      <SEOHead title="Service Desk — условия IT-поддержки | Novum Tech" description="Приоритеты заявок, SLA, время реакции и что входит в IT-обслуживание от Novum Tech в Ташкенте." canonical="https://novumtech.uz/service-desk" />
+      <Navbar />
+      <main className="pt-16">
     <section className="relative py-20 lg:py-32 overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_0%,hsl(217,91%,60%,0.06),transparent_70%)]" />
       <div className="container mx-auto px-4 lg:px-8 max-w-4xl relative">
@@ -160,5 +167,8 @@ export default function ServiceDeskPage() {
         </div>
       </div>
     </section>
+      </main>
+      <Footer />
+    </div>
   );
 }
