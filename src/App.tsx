@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/i18n/LanguageContext";
-import Index from "./pages/Index";
+import FinanceTrackerPage from "./pages/FinanceTrackerPage";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/AdminLogin";
 import AdminLayout from "./components/admin/AdminLayout";
@@ -32,7 +32,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<FinanceTrackerPage />} />
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/constructor" element={<ConstructorPage />} />
             <Route path="/service-desk" element={<ServiceDeskPage />} />
