@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
+    "start:leads": "node src/lead-agent.js",
     "dev": "node --watch src/index.js",
+    "dev:leads": "node --watch src/lead-agent.js",
     "setup-db": "node src/setup-database.js"
   },
   "dependencies": {

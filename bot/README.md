@@ -155,3 +155,53 @@ npm test
 ---
 
 Создано для Novum Tech © 2026
+
+---
+
+## Lead Agent (поиск клиентов, Telegram + Email)
+
+Автономный агент для поиска клиентов в Ташкенте и ведения воронки.
+
+### Что умеет
+
+- Ищет лиды через Google (через `SERPER_API_KEY`)
+- Достаёт контакты (email/telegram/phone) с сайтов
+- Складывает лиды в Supabase с оценкой (score)
+- Ведёт статусы: `new -> contacted -> meeting -> proposal -> won/lost`
+- Даёт готовые шаблоны сообщений для Telegram и Email
+- Отправляет ежедневный отчёт в Telegram
+
+### Быстрый запуск
+
+1. Выполните SQL из `bot/sql/lead_agent.sql` в Supabase SQL Editor.
+2. Добавьте в `.env`:
+
+```env
+TELEGRAM_BOT_TOKEN=...
+ADMIN_CHAT_ID=8374898260
+SUPABASE_URL=...
+SUPABASE_SERVICE_KEY=...
+SERPER_API_KEY=...
+LEAD_CITY=Ташкент
+DAILY_REPORT_CRON=0 9 * * *
+DAILY_REPORT_TIMEZONE=Asia/Tashkent
+```
+
+3. Запустите агент:
+
+```bash
+cd bot
+npm install
+npm run start:leads
+```
+
+### Команды Lead Agent
+
+- `/start` — показать команды
+- `/scan 3` — автономно искать лиды (3 ниши)
+- `/today` — топ лидов
+- `/next` — следующий лучший новый лид
+- `/pitch <id>` — шаблоны Telegram + Email под лид
+- `/status <id> <new|contacted|meeting|proposal|won|lost>`
+- `/addlead Компания | сайт | email | telegram | телефон`
+- `/stats` — статистика воронки
