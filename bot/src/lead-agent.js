@@ -114,7 +114,11 @@ async function runSerperSearch(query, num = 10) {
     body: JSON.stringify({ q: query, gl: "uz", hl: "ru", num }),
   });
 
-  if (!response.ok) return [];
+  if (!response.ok) {
+    const reason = await response.text();
+    console.error(`SERPER error for query "${query}": ${response.status} ${reason}`);
+    return [];
+  }
   const json = await response.json();
   return json.organic || [];
 }
@@ -139,9 +143,10 @@ async function scanLeads(limitQueries = 3) {
   let saved = 0;
   for (const query of BASE_QUERIES.slice(0, limitQueries)) {
     const results = await runSerperSearch(query, 8);
+    console.log(`[scan] query="${query}" results=${results.length}`);
     for (const item of results) {
-      const website = item.link;
-      const domain = normalizeDomain(website);
+      const website = item.link || item.displayLink || "";
+      const domain = normalizeDomain(website || item.displayLink || "");
       const snippetBlob = `${item.title || ""} ${item.snippet || ""}`;
       const snippetContacts = extractContacts(snippetBlob);
 
@@ -151,13 +156,14 @@ async function scanLeads(limitQueries = 3) {
 
       const enriched = await enrichFromWebsite(website);
       const lead = await upsertLead({
-        company_name: item.title?.slice(0, 120) || domain,
-        website,
+        company_name: item.title?.slice(0, 120) || domain || "Компания без названия",
+        website: website || (domain ? `https://${domain}` : null),
         domain,
         email: enriched.email || snippetContacts.emails[0] || null,
         telegram: enriched.telegram || snippetContacts.telegrams[0] || null,
         phone: enriched.phone || snippetContacts.phones[0] || null,
         source: `serper:${query}`,
+        notes: item.snippet || null,
       });
       if (lead) saved += 1;
     }
