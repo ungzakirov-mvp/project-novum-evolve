@@ -2,11 +2,9 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": null,
-  "rewrites": [
-    {
-      "source": "/((?!api/|assets/|favicon.ico|robots.txt|sitemap.xml|yandex_fd1a4df8eccf9101.html|placeholder.svg).*)",
-      "destination": "/index.html"
-    }
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ],
   "headers": [
     {
