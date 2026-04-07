@@ -20,6 +20,12 @@ const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID || "8374898260";
 const LEAD_CITY = process.env.LEAD_CITY || "Ташкент";
 const DAILY_REPORT_CRON = process.env.DAILY_REPORT_CRON || "0 9 * * *";
 const DAILY_REPORT_TIMEZONE = process.env.DAILY_REPORT_TIMEZONE || "Asia/Tashkent";
+const AUTO_OUTREACH = String(process.env.AUTO_OUTREACH || "false").toLowerCase() === "true";
+const AUTO_OUTREACH_CRON = process.env.AUTO_OUTREACH_CRON || "30 9 * * *";
+const MAX_DAILY_OUTREACH = Number(process.env.MAX_DAILY_OUTREACH || 8);
+const MAX_OUTREACH_ATTEMPTS = Number(process.env.MAX_OUTREACH_ATTEMPTS || 3);
+const MIN_CONTACT_INTERVAL_DAYS = Number(process.env.MIN_CONTACT_INTERVAL_DAYS || 7);
+const OUTREACH_DRY_RUN = String(process.env.OUTREACH_DRY_RUN || "true").toLowerCase() === "true";
 
 const BASE_QUERIES = [
   `логистика ${LEAD_CITY} контакты`,
@@ -184,6 +190,127 @@ function buildEmailPitch(lead) {
   return { subject, body };
 }
 
+async function logLeadActivity(leadId, channel, activityType, payload = {}) {
+  await supabase.from("lead_activity").insert({
+    lead_id: leadId,
+    channel,
+    activity_type: activityType,
+    payload,
+  });
+}
+
+function canContactLead(lead) {
+  if (lead.do_not_contact) return { ok: false, reason: "do_not_contact" };
+  if ((lead.outreach_attempts || 0) >= MAX_OUTREACH_ATTEMPTS) return { ok: false, reason: "max_attempts" };
+  if (!lead.email && !lead.telegram) return { ok: false, reason: "no_channel" };
+  if (lead.last_contacted_at) {
+    const days = (Date.now() - new Date(lead.last_contacted_at).getTime()) / (1000 * 60 * 60 * 24);
+    if (days < MIN_CONTACT_INTERVAL_DAYS) return { ok: false, reason: "cooldown" };
+  }
+  return { ok: true, reason: "ok" };
+}
+
+async function sendEmailViaResend(to, subject, bodyText) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.RESEND_FROM || "Novum Tech <support@novumtech.uz>";
+  if (!apiKey) {
+    return { sent: false, reason: "missing_resend_api_key" };
+  }
+  if (OUTREACH_DRY_RUN) {
+    return { sent: false, reason: "dry_run" };
+  }
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from,
+      to: [to],
+      subject,
+      text: bodyText,
+    }),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    return { sent: false, reason: `resend_error:${response.status}:${errText}` };
+  }
+  return { sent: true, reason: "sent" };
+}
+
+async function getOutreachCandidates(limit = MAX_DAILY_OUTREACH) {
+  const { data } = await supabase
+    .from("leads")
+    .select("id, company_name, email, telegram, phone, score, status, last_contacted_at, outreach_attempts, do_not_contact, website")
+    .in("status", ["new", "contacted"])
+    .order("score", { ascending: false })
+    .limit(100);
+
+  const filtered = (data || []).filter((lead) => canContactLead(lead).ok);
+  return filtered.slice(0, Math.max(1, limit));
+}
+
+async function runAutoOutreach() {
+  const candidates = await getOutreachCandidates(MAX_DAILY_OUTREACH);
+  if (!candidates.length) {
+    await bot.api.sendMessage(ADMIN_CHAT_ID, "📭 Auto outreach: сегодня нет подходящих лидов.");
+    return;
+  }
+
+  let emailSent = 0;
+  let emailSkipped = 0;
+  const manualTelegramTasks = [];
+
+  for (const lead of candidates) {
+    const pitchEmail = buildEmailPitch(lead);
+    const pitchTg = buildTelegramPitch(lead);
+
+    if (lead.email) {
+      const emailResult = await sendEmailViaResend(lead.email, pitchEmail.subject, pitchEmail.body);
+      if (emailResult.sent) {
+        emailSent += 1;
+        await logLeadActivity(lead.id, "email", "outreach", { subject: pitchEmail.subject, mode: OUTREACH_DRY_RUN ? "dry_run" : "live" });
+      } else {
+        emailSkipped += 1;
+        await logLeadActivity(lead.id, "email", "note", { reason: emailResult.reason });
+      }
+    }
+
+    if (lead.telegram) {
+      manualTelegramTasks.push(`• ${lead.company_name} (${lead.telegram})\n${pitchTg}`);
+      await logLeadActivity(lead.id, "telegram", "outreach", { mode: "manual_task_generated" });
+    }
+
+    await supabase
+      .from("leads")
+      .update({
+        status: "contacted",
+        last_contacted_at: new Date().toISOString(),
+        outreach_attempts: (lead.outreach_attempts || 0) + 1,
+      })
+      .eq("id", lead.id);
+  }
+
+  const summary = [
+    "🤖 Auto outreach выполнен",
+    `Кандидатов: ${candidates.length}`,
+    `Email отправлено: ${emailSent}`,
+    `Email пропущено: ${emailSkipped}`,
+    `Telegram задач: ${manualTelegramTasks.length}`,
+    `Режим: ${OUTREACH_DRY_RUN ? "DRY RUN" : "LIVE"}`,
+  ].join("\n");
+
+  await bot.api.sendMessage(ADMIN_CHAT_ID, summary);
+
+  if (manualTelegramTasks.length) {
+    const chunk = manualTelegramTasks.slice(0, 3).join("\n\n");
+    await bot.api.sendMessage(ADMIN_CHAT_ID, `🧾 Telegram задачи (первые 3):\n\n${chunk}`);
+  }
+}
+
 async function getTopLeads(limit = 10) {
   const { data } = await supabase
     .from("leads")
@@ -228,6 +355,8 @@ bot.command("start", async (ctx) => {
       "/pitch <id> - шаблоны Telegram+Email",
       "/status <id> <new|contacted|meeting|proposal|won|lost>",
       "/addlead Компания | сайт | email | telegram | телефон",
+      "/autopilot - запустить авто outreach сейчас",
+      "/dnc <id> on|off - запретить/разрешить контакт",
       "/stats - воронка",
     ].join("\n")
   );
@@ -371,6 +500,27 @@ bot.command("stats", async (ctx) => {
   await ctx.reply(`📊 Воронка\n\n${rows.join("\n")}`);
 });
 
+bot.command("autopilot", async (ctx) => {
+  if (!adminOnly(ctx)) return;
+  await ctx.reply("🚀 Запускаю авто outreach...");
+  await runAutoOutreach();
+});
+
+bot.command("dnc", async (ctx) => {
+  if (!adminOnly(ctx)) return;
+  const [id, state] = (ctx.match || "").trim().split(/\s+/);
+  if (!id || !["on", "off"].includes(state)) {
+    await ctx.reply("Используй: /dnc <id> on|off");
+    return;
+  }
+  const { error } = await supabase.from("leads").update({ do_not_contact: state === "on" }).eq("id", id);
+  if (error) {
+    await ctx.reply(`Ошибка: ${error.message}`);
+    return;
+  }
+  await ctx.reply(`✅ do_not_contact: ${state}`);
+});
+
 cron.schedule(
   DAILY_REPORT_CRON,
   async () => {
@@ -382,6 +532,20 @@ cron.schedule(
   },
   { timezone: DAILY_REPORT_TIMEZONE }
 );
+
+if (AUTO_OUTREACH) {
+  cron.schedule(
+    AUTO_OUTREACH_CRON,
+    async () => {
+      try {
+        await runAutoOutreach();
+      } catch (error) {
+        console.error("auto outreach error", error);
+      }
+    },
+    { timezone: DAILY_REPORT_TIMEZONE }
+  );
+}
 
 async function bootstrap() {
   console.log("Lead Agent started");

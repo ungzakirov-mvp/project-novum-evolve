@@ -12,12 +12,17 @@ create table if not exists leads (
   source text default 'manual',
   score integer default 0,
   status text default 'new' check (status in ('new','contacted','meeting','proposal','won','lost')),
+  outreach_attempts integer default 0,
+  do_not_contact boolean default false,
   notes text,
   outreach_channel text default 'telegram,email',
   last_contacted_at timestamptz,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
+
+alter table leads add column if not exists outreach_attempts integer default 0;
+alter table leads add column if not exists do_not_contact boolean default false;
 
 create table if not exists lead_activity (
   id uuid primary key default gen_random_uuid(),

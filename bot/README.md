@@ -204,4 +204,20 @@ npm run start:leads
 - `/pitch <id>` — шаблоны Telegram + Email под лид
 - `/status <id> <new|contacted|meeting|proposal|won|lost>`
 - `/addlead Компания | сайт | email | telegram | телефон`
+- `/autopilot` — запустить авто outreach прямо сейчас
+- `/dnc <id> on|off` — запретить/разрешить контакт с лидом
 - `/stats` — статистика воронки
+
+### Anti-spam режим (важно)
+
+По умолчанию стоит безопасный запуск:
+
+- `OUTREACH_DRY_RUN=true` — письма не отправляются, только формируются задачи
+- `MAX_DAILY_OUTREACH=8` — максимум касаний в день
+- `MAX_OUTREACH_ATTEMPTS=3` — не больше 3 попыток на лид
+- `MIN_CONTACT_INTERVAL_DAYS=7` — пауза 7 дней между касаниями
+
+Когда будете готовы к реальной отправке email:
+
+1. Установите `RESEND_API_KEY`
+2. Поставьте `OUTREACH_DRY_RUN=false`
