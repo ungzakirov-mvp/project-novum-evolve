@@ -204,6 +204,7 @@ npm run start:leads
 - `/next` — следующий лучший новый лид
 - `/followups [n]` — кого дожимать сегодня
 - `/batchpitch [n]` — пачка готовых сообщений
+- `/plan [n]` — приоритетный план касаний на день
 - `/pitch <id>` — шаблоны Telegram + Email под лид
 - `/status <id> <new|contacted|meeting|proposal|won|lost>`
 - `/addlead Компания | сайт | email | telegram | телефон`

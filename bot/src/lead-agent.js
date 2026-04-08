@@ -384,6 +384,27 @@ async function getFollowupLeads(limit = 10) {
   return data || [];
 }
 
+async function getDailyPlan(limit = 12) {
+  const hot = (await getTopLeads(limit)).filter((l) => l.score >= 60);
+  const followups = await getFollowupLeads(limit);
+
+  const byId = new Map();
+  for (const lead of [...hot, ...followups]) {
+    if (!byId.has(lead.id)) byId.set(lead.id, lead);
+  }
+
+  const merged = [...byId.values()]
+    .sort((a, b) => (b.score || 0) - (a.score || 0))
+    .slice(0, limit);
+
+  return merged.map((lead, idx) => ({
+    ...lead,
+    priority: idx + 1,
+    action: lead.status === "new" ? "first_contact" : "followup",
+    channel: preferredChannel(lead),
+  }));
+}
+
 async function sendDailyReport() {
   const leads = await getTopLeads(10);
   const { count: newCount } = await supabase.from("leads").select("*", { count: "exact", head: true }).eq("status", "new");
@@ -434,6 +455,7 @@ bot.command("start", async (ctx) => {
       "/hot [n] - горячие лиды",
       "/followups [n] - кого дожимать сегодня",
       "/batchpitch [n] - пачка готовых сообщений",
+      "/plan [n] - план касаний на сегодня",
       "/pitch <id> - шаблоны Telegram+Email",
       "/status <id> <new|contacted|meeting|proposal|won|lost>",
       "/addlead Компания | сайт | email | telegram | телефон",
@@ -515,6 +537,24 @@ bot.command("batchpitch", async (ctx) => {
     const tg = buildTelegramPitch(lead);
     await ctx.reply(`🧩 ${lead.company_name}\nКанал: ${preferredChannel(lead)}\n\n${tg}`);
   }
+});
+
+bot.command("plan", async (ctx) => {
+  if (!adminOnly(ctx)) return;
+  const arg = Number(ctx.match || 10);
+  const limit = Number.isFinite(arg) && arg > 0 ? Math.min(arg, 20) : 10;
+  const plan = await getDailyPlan(limit);
+
+  if (!plan.length) {
+    await ctx.reply("План пуст. Запусти /scan 8 и проверь /hot.");
+    return;
+  }
+
+  const lines = plan.map(
+    (p) => `${p.priority}. ${p.company_name} | ${p.action} | ${p.channel} | score ${p.score}`
+  );
+
+  await ctx.reply(`📅 План на сегодня (${plan.length})\n\n${lines.join("\n")}`);
 });
 
 bot.command("next", async (ctx) => {
