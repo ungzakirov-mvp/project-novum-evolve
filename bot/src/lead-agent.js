@@ -19,6 +19,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID || "8374898260";
 const LEAD_CITY = process.env.LEAD_CITY || "Ташкент";
 const DAILY_REPORT_CRON = process.env.DAILY_REPORT_CRON || "0 9 * * *";
+const EVENING_REPORT_CRON = process.env.EVENING_REPORT_CRON || "0 18 * * *";
 const DAILY_REPORT_TIMEZONE = process.env.DAILY_REPORT_TIMEZONE || "Asia/Tashkent";
 const AUTO_OUTREACH = String(process.env.AUTO_OUTREACH || "false").toLowerCase() === "true";
 const AUTO_OUTREACH_CRON = process.env.AUTO_OUTREACH_CRON || "30 9 * * *";
@@ -36,7 +37,23 @@ const BASE_QUERIES = [
   `строительная компания ${LEAD_CITY} контакты`,
   `отель ${LEAD_CITY} контакты`,
   `сеть магазинов ${LEAD_CITY} контакты`,
+  `девелопер ${LEAD_CITY} контакты`,
+  `фармацевтическая компания ${LEAD_CITY} контакты`,
+  `клиника ${LEAD_CITY} контакты`,
+  `логистическая компания ${LEAD_CITY} email`,
+  `b2b компания ${LEAD_CITY} контакты`,
 ];
+
+const LOW_QUALITY_DOMAINS = new Set([
+  "2gis.ru",
+  "yandex.ru",
+  "google.com",
+  "maps.google.com",
+  "instagram.com",
+  "t.me",
+  "facebook.com",
+  "glotr.uz",
+]);
 
 function adminOnly(ctx) {
   return String(ctx.chat?.id || "") === String(ADMIN_CHAT_ID);
@@ -50,6 +67,17 @@ function normalizeDomain(input) {
   } catch {
     return null;
   }
+}
+
+function inferIndustry(text) {
+  const t = (text || "").toLowerCase();
+  if (t.includes("логист") || t.includes("достав") || t.includes("склад")) return "логистика";
+  if (t.includes("ритейл") || t.includes("магаз") || t.includes("маркет")) return "ритейл";
+  if (t.includes("клиник") || t.includes("мед") || t.includes("hospital")) return "медицина";
+  if (t.includes("завод") || t.includes("производ") || t.includes("factory")) return "производство";
+  if (t.includes("строит") || t.includes("девелоп") || t.includes("подряд")) return "строительство";
+  if (t.includes("отел") || t.includes("hotel") || t.includes("гостиниц")) return "гостиницы";
+  return "общая";
 }
 
 function extractContacts(text) {
@@ -66,11 +94,21 @@ function calcScore(lead) {
   if (lead.phone) score += 20;
   if (lead.website) score += 10;
   if ((lead.company_name || "").length > 3) score += 5;
+  if ((lead.source || "").includes("email")) score += 5;
+  if (lead.industry && lead.industry !== "общая") score += 5;
   return Math.min(score, 100);
+}
+
+function preferredChannel(lead) {
+  if (lead.email) return "email";
+  if (lead.telegram) return "telegram";
+  if (lead.phone) return "call";
+  return "none";
 }
 
 async function upsertLead(lead) {
   const domain = normalizeDomain(lead.website || lead.domain || "");
+  if (domain && LOW_QUALITY_DOMAINS.has(domain)) return null;
   if (!domain && !lead.email && !lead.telegram && !lead.phone) return null;
 
   const payload = {
@@ -86,6 +124,7 @@ async function upsertLead(lead) {
     status: lead.status || "new",
     notes: lead.notes || null,
     outreach_channel: lead.outreach_channel || "telegram,email",
+    industry: lead.industry || "общая",
   };
 
   const { data, error } = await supabase
@@ -164,6 +203,7 @@ async function scanLeads(limitQueries = 3) {
         phone: enriched.phone || snippetContacts.phones[0] || null,
         source: `serper:${query}`,
         notes: item.snippet || null,
+        industry: inferIndustry(`${query} ${item.title || ""} ${item.snippet || ""}`),
       });
       if (lead) saved += 1;
     }
@@ -325,8 +365,20 @@ async function runAutoOutreach() {
 async function getTopLeads(limit = 10) {
   const { data } = await supabase
     .from("leads")
-    .select("id, company_name, score, email, telegram, phone, status, website")
+    .select("id, company_name, score, email, telegram, phone, status, website, industry, last_contacted_at")
     .in("status", ["new", "contacted", "meeting", "proposal"])
+    .order("score", { ascending: false })
+    .limit(limit);
+  return data || [];
+}
+
+async function getFollowupLeads(limit = 10) {
+  const threshold = new Date(Date.now() - MIN_CONTACT_INTERVAL_DAYS * 24 * 60 * 60 * 1000).toISOString();
+  const { data } = await supabase
+    .from("leads")
+    .select("id, company_name, score, email, telegram, phone, status, last_contacted_at")
+    .in("status", ["contacted", "meeting", "proposal"])
+    .lt("last_contacted_at", threshold)
     .order("score", { ascending: false })
     .limit(limit);
   return data || [];
@@ -354,6 +406,22 @@ async function sendDailyReport() {
   await bot.api.sendMessage(ADMIN_CHAT_ID, text);
 }
 
+async function sendEveningFollowupReport() {
+  const leads = await getFollowupLeads(10);
+  const list = leads
+    .map((l, i) => `${i + 1}. ${l.company_name} | ${l.status} | ${l.email || l.telegram || l.phone || "no contact"}`)
+    .join("\n");
+
+  const text = [
+    "🌙 Вечерний follow-up отчёт",
+    `Кандидаты на дожим: ${leads.length}`,
+    "",
+    list || "На сегодня кандидатов нет",
+  ].join("\n");
+
+  await bot.api.sendMessage(ADMIN_CHAT_ID, text);
+}
+
 bot.command("start", async (ctx) => {
   if (!adminOnly(ctx)) return;
   await ctx.reply(
@@ -363,6 +431,9 @@ bot.command("start", async (ctx) => {
       "/scan [n] - поиск новых лидов (n=кол-во ниш, по умолчанию 3)",
       "/today - топ лидов",
       "/next - следующий новый лид",
+      "/hot [n] - горячие лиды",
+      "/followups [n] - кого дожимать сегодня",
+      "/batchpitch [n] - пачка готовых сообщений",
       "/pitch <id> - шаблоны Telegram+Email",
       "/status <id> <new|contacted|meeting|proposal|won|lost>",
       "/addlead Компания | сайт | email | telegram | телефон",
@@ -396,9 +467,54 @@ bot.command("today", async (ctx) => {
     return;
   }
   const msg = leads
-    .map((l) => `#${l.id.slice(0, 8)} | ${l.company_name} | score ${l.score}\n${l.email || ""} ${l.telegram || ""} ${l.phone || ""}`)
+    .map((l) => `#${l.id.slice(0, 8)} | ${l.company_name} | score ${l.score} | ${preferredChannel(l)}\n${l.email || ""} ${l.telegram || ""} ${l.phone || ""}`)
     .join("\n\n");
   await ctx.reply(`🎯 Топ лидов:\n\n${msg}`);
+});
+
+bot.command("hot", async (ctx) => {
+  if (!adminOnly(ctx)) return;
+  const arg = Number(ctx.match || 10);
+  const limit = Number.isFinite(arg) && arg > 0 ? Math.min(arg, 20) : 10;
+  const leads = (await getTopLeads(limit)).filter((l) => l.score >= 60);
+  if (!leads.length) {
+    await ctx.reply("Пока нет hot лидов (score 60+). Сделай /scan 8.");
+    return;
+  }
+  const msg = leads
+    .map((l) => `#${l.id.slice(0, 8)} | ${l.company_name} | score ${l.score} | ${l.industry || "общая"} | ${preferredChannel(l)}`)
+    .join("\n");
+  await ctx.reply(`🔥 Hot лиды:\n\n${msg}`);
+});
+
+bot.command("followups", async (ctx) => {
+  if (!adminOnly(ctx)) return;
+  const arg = Number(ctx.match || 10);
+  const limit = Number.isFinite(arg) && arg > 0 ? Math.min(arg, 20) : 10;
+  const leads = await getFollowupLeads(limit);
+  if (!leads.length) {
+    await ctx.reply("Сегодня кандидатов на follow-up нет.");
+    return;
+  }
+  const msg = leads
+    .map((l) => `#${l.id.slice(0, 8)} | ${l.company_name} | ${l.status} | ${l.email || l.telegram || l.phone || "no contact"}`)
+    .join("\n");
+  await ctx.reply(`🔁 Follow-up список:\n\n${msg}`);
+});
+
+bot.command("batchpitch", async (ctx) => {
+  if (!adminOnly(ctx)) return;
+  const arg = Number(ctx.match || 3);
+  const limit = Number.isFinite(arg) && arg > 0 ? Math.min(arg, 10) : 3;
+  const leads = await getTopLeads(limit);
+  if (!leads.length) {
+    await ctx.reply("Нет лидов для batch pitch.");
+    return;
+  }
+  for (const lead of leads) {
+    const tg = buildTelegramPitch(lead);
+    await ctx.reply(`🧩 ${lead.company_name}\nКанал: ${preferredChannel(lead)}\n\n${tg}`);
+  }
 });
 
 bot.command("next", async (ctx) => {
@@ -539,6 +655,18 @@ cron.schedule(
       await sendDailyReport();
     } catch (error) {
       console.error("daily report error", error);
+    }
+  },
+  { timezone: DAILY_REPORT_TIMEZONE }
+);
+
+cron.schedule(
+  EVENING_REPORT_CRON,
+  async () => {
+    try {
+      await sendEveningFollowupReport();
+    } catch (error) {
+      console.error("evening report error", error);
     }
   },
   { timezone: DAILY_REPORT_TIMEZONE }

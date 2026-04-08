@@ -200,7 +200,10 @@ npm run start:leads
 - `/start` — показать команды
 - `/scan 3` — автономно искать лиды (3 ниши)
 - `/today` — топ лидов
+- `/hot [n]` — горячие лиды (score 60+)
 - `/next` — следующий лучший новый лид
+- `/followups [n]` — кого дожимать сегодня
+- `/batchpitch [n]` — пачка готовых сообщений
 - `/pitch <id>` — шаблоны Telegram + Email под лид
 - `/status <id> <new|contacted|meeting|proposal|won|lost>`
 - `/addlead Компания | сайт | email | telegram | телефон`
@@ -221,3 +224,7 @@ npm run start:leads
 
 1. Установите `RESEND_API_KEY`
 2. Поставьте `OUTREACH_DRY_RUN=false`
+
+### После обновления агента
+
+Если вы уже запускали SQL раньше, выполните `bot/sql/lead_agent.sql` ещё раз — он безопасно добавит новые поля (`industry`).

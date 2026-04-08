@@ -9,6 +9,7 @@ create table if not exists leads (
   telegram text,
   phone text,
   city text default 'Ташкент',
+  industry text default 'общая',
   source text default 'manual',
   score integer default 0,
   status text default 'new' check (status in ('new','contacted','meeting','proposal','won','lost')),
@@ -23,6 +24,7 @@ create table if not exists leads (
 
 alter table leads add column if not exists outreach_attempts integer default 0;
 alter table leads add column if not exists do_not_contact boolean default false;
+alter table leads add column if not exists industry text default 'общая';
 
 create table if not exists lead_activity (
   id uuid primary key default gen_random_uuid(),
