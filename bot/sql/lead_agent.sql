@@ -13,6 +13,7 @@ create table if not exists leads (
   source text default 'manual',
   score integer default 0,
   status text default 'new' check (status in ('new','contacted','meeting','proposal','won','lost')),
+  deal_value numeric(14,2) default 0,
   outreach_attempts integer default 0,
   do_not_contact boolean default false,
   notes text,
@@ -25,6 +26,7 @@ create table if not exists leads (
 alter table leads add column if not exists outreach_attempts integer default 0;
 alter table leads add column if not exists do_not_contact boolean default false;
 alter table leads add column if not exists industry text default 'общая';
+alter table leads add column if not exists deal_value numeric(14,2) default 0;
 
 create table if not exists lead_activity (
   id uuid primary key default gen_random_uuid(),

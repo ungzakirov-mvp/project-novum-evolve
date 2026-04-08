@@ -428,6 +428,36 @@ async function getDailyPlan(limit = 12) {
   }));
 }
 
+async function getCrmSummary() {
+  const statuses = ["new", "contacted", "meeting", "proposal", "won", "lost"];
+  const counts = {};
+  for (const status of statuses) {
+    const { count } = await supabase.from("leads").select("*", { count: "exact", head: true }).eq("status", status);
+    counts[status] = count || 0;
+  }
+
+  const { data: pipelineRows } = await supabase
+    .from("leads")
+    .select("status, deal_value")
+    .in("status", ["meeting", "proposal", "won"]);
+
+  const safeValue = (x) => (typeof x === "number" && Number.isFinite(x) ? x : 0);
+  const meetingValue = (pipelineRows || []).filter((x) => x.status === "meeting").reduce((s, x) => s + safeValue(x.deal_value), 0);
+  const proposalValue = (pipelineRows || []).filter((x) => x.status === "proposal").reduce((s, x) => s + safeValue(x.deal_value), 0);
+  const wonValue = (pipelineRows || []).filter((x) => x.status === "won").reduce((s, x) => s + safeValue(x.deal_value), 0);
+
+  // Простая модель прогноза: meeting 30%, proposal 60%, won 100%
+  const forecastValue = Math.round(meetingValue * 0.3 + proposalValue * 0.6 + wonValue);
+
+  return {
+    counts,
+    meetingValue,
+    proposalValue,
+    wonValue,
+    forecastValue,
+  };
+}
+
 async function sendDailyReport() {
   const leads = await getTopLeads(10);
   const { count: newCount } = await supabase.from("leads").select("*", { count: "exact", head: true }).eq("status", "new");
@@ -479,8 +509,10 @@ bot.command("start", async (ctx) => {
       "/followups [n] - кого дожимать сегодня",
       "/batchpitch [n] - пачка готовых сообщений",
       "/plan [n] - план касаний на сегодня",
+      "/crm - сводка воронки и прогноз",
       "/pitch <id> - шаблоны Telegram+Email",
       "/nudge <id> - 3 варианта 1-го/2-го касания",
+      "/value <id> <сумма> - задать ценность лида",
       "/result <id> <interested|meeting|no_reply|not_now|wrong_contact|won|lost>",
       "/status <id> <new|contacted|meeting|proposal|won|lost>",
       "/addlead Компания | сайт | email | telegram | телефон",
@@ -722,6 +754,53 @@ bot.command("result", async (ctx) => {
 
   await logLeadActivity(id, "other", "note", { outcome, mapped_status: map[outcome] });
   await ctx.reply(`✅ Результат сохранён: ${outcome} -> ${map[outcome]}`);
+});
+
+bot.command("value", async (ctx) => {
+  if (!adminOnly(ctx)) return;
+  const [rawId, rawAmount] = (ctx.match || "").trim().split(/\s+/);
+  const amount = Number((rawAmount || "").replace(/[^\d.]/g, ""));
+  if (!rawId || !Number.isFinite(amount) || amount <= 0) {
+    await ctx.reply("Используй: /value <id> <сумма>, например /value ab12cd34 25000000");
+    return;
+  }
+  const id = await resolveLeadId(rawId);
+  if (!id) {
+    await ctx.reply("Лид не найден по этому id/префиксу.");
+    return;
+  }
+
+  const { error } = await supabase.from("leads").update({ deal_value: amount }).eq("id", id);
+  if (error) {
+    await ctx.reply(`Ошибка обновления: ${error.message}`);
+    return;
+  }
+
+  await logLeadActivity(id, "other", "note", { deal_value: amount, currency: "UZS" });
+  await ctx.reply(`💰 Ценность лида сохранена: ${amount.toLocaleString("ru-RU")} UZS`);
+});
+
+bot.command("crm", async (ctx) => {
+  if (!adminOnly(ctx)) return;
+  const s = await getCrmSummary();
+  const money = (n) => `${Math.round(n).toLocaleString("ru-RU")} UZS`;
+
+  await ctx.reply(
+    [
+      "📊 CRM сводка",
+      `new: ${s.counts.new}`,
+      `contacted: ${s.counts.contacted}`,
+      `meeting: ${s.counts.meeting}`,
+      `proposal: ${s.counts.proposal}`,
+      `won: ${s.counts.won}`,
+      `lost: ${s.counts.lost}`,
+      "",
+      `Встречи (pipeline): ${money(s.meetingValue)}`,
+      `КП (pipeline): ${money(s.proposalValue)}`,
+      `Won: ${money(s.wonValue)}`,
+      `Прогноз выручки: ${money(s.forecastValue)}`,
+    ].join("\n")
+  );
 });
 
 bot.command("status", async (ctx) => {

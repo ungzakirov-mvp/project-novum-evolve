@@ -205,8 +205,10 @@ npm run start:leads
 - `/followups [n]` — кого дожимать сегодня
 - `/batchpitch [n]` — пачка готовых сообщений
 - `/plan [n]` — приоритетный план касаний на день
+- `/crm` — сводка воронки и прогноз выручки
 - `/pitch <id>` — шаблоны Telegram + Email под лид
 - `/nudge <id>` — 3 варианта сообщения для первого/второго касания
+- `/value <id> <сумма>` — задать ценность сделки для лида
 - `/result <id> <interested|meeting|no_reply|not_now|wrong_contact|won|lost>` — быстрый результат по контакту
 - `/status <id> <new|contacted|meeting|proposal|won|lost>`
 - `/addlead Компания | сайт | email | telegram | телефон`
