@@ -2440,7 +2440,7 @@ function demoRate(rating) {
     showToast('Оценка ' + rating + ' сохранена', 'success');
 }
 
-// Initialize demo cards
+// Initialize demo cards and form handlers
 document.addEventListener('DOMContentLoaded', () => {
     demoUpdateCheckProgress();
     
@@ -2452,7 +2452,6 @@ document.addEventListener('DOMContentLoaded', () => {
         #demoCardsContainer .checklist-checkbox { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.2); border-radius: 4px; display: inline-flex; }
     `;
     document.head.appendChild(style);
-});
     
     const assetSearchInput = document.getElementById('assetSearchInput');
     if (assetSearchInput) {
@@ -2466,9 +2465,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (assetTypeFilter) assetTypeFilter.addEventListener('change', () => loadAssetsView());
     const assetStatusFilter = document.getElementById('assetStatusFilter');
     if (assetStatusFilter) assetStatusFilter.addEventListener('change', () => loadAssetsView());
+    
+    const addAssetFormEl = document.getElementById('addAssetForm');
+    if (addAssetFormEl) addAssetFormEl.addEventListener('submit', handleCreateAsset);
 });
-
-// Asset form handler
-const addAssetFormEl = document.getElementById('addAssetForm');
-if (addAssetFormEl) addAssetFormEl.addEventListener('submit', handleCreateAsset);
 
