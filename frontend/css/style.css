@@ -1359,18 +1359,20 @@ body {
 }
 
 .notification-dropdown {
-    position: absolute;
-    top: 100%;
-    right: 0px;
-    width: 280px;
-    margin-top: 1rem;
-    z-index: 1200;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 380px;
+    max-width: 90vw;
+    max-height: 80vh;
+    z-index: 99999;
     padding: 0;
     backdrop-filter: blur(25px);
-    background: rgba(17, 24, 39, 0.9);
+    background: rgba(17, 24, 39, 0.95);
     border: 1px solid var(--glass-border);
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    border-radius: 16px;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 40px rgba(0,212,255,0.15);
 }
 
 .notif-header {
@@ -4528,10 +4530,9 @@ body {
 
 .notification-dropdown {
     background: linear-gradient(145deg, rgba(8,12,24,0.98) 0%, rgba(5,8,16,0.99) 100%);
-    border: 1px solid rgba(0,212,255,0.2);
+    border: 1px solid rgba(0,212,255,0.3);
     border-radius: 16px;
-    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 40px rgba(0,212,255,0.1);
-    backdrop-filter: blur(20px);
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 40px rgba(0,212,255,0.15);
 }
 
 .notification-dropdown::before {

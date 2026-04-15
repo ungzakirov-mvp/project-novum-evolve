@@ -1470,6 +1470,17 @@ function toggleNotifications() {
     dropdown.classList.toggle('hidden');
 }
 
+// Close notifications when clicking outside
+document.addEventListener('click', function(e) {
+    const dropdown = document.getElementById('notificationDropdown');
+    const trigger = document.querySelector('.notification-trigger');
+    if (dropdown && !dropdown.classList.contains('hidden') && 
+        !dropdown.contains(e.target) && 
+        !trigger?.contains(e.target)) {
+        dropdown.classList.add('hidden');
+    }
+});
+
 async function markAllNotificationsAsRead() {
     try {
         await api.request('/notifications/read-all', { method: 'POST' });
