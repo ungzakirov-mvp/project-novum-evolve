@@ -813,15 +813,21 @@ async function loadOpenTickets() {
             return;
         }
         
+        console.log('Rendering', tickets.length, 'tickets');
+        
         container.innerHTML = '';
         
-        tickets.forEach(t => {
+        tickets.forEach((t, i) => {
+            console.log('Rendering ticket', i, t.id);
             const div = document.createElement('div');
+            div.id = 'ticket-' + t.id;
             div.style.cssText = 'cursor:pointer;padding:0.75rem;margin-bottom:0.5rem;background:#1a1a3a;border-radius:8px;border:1px solid #00d4ff;display:flex;align-items:center;gap:0.5rem;';
             div.onclick = () => openTicketModal(t.id);
             div.innerHTML = '<span style="color:#00d4ff;font-weight:bold;font-size:1.2rem;">#' + t.id + '</span><span style="color:#fff;font-size:1rem;">' + (t.title || t.subject || 'Без заголовка') + '</span>';
             container.appendChild(div);
         });
+        
+        console.log('Container children after:', container.children.length);
     } catch (e) {
         console.error('Load open tickets error:', e);
         container.innerHTML = '<p style="color:var(--jarvis-rose);font-size:0.85rem;">Ошибка: ' + e.message + '</p>';
