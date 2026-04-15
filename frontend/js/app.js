@@ -780,25 +780,47 @@ function showView(viewName) {
     }
 }
 
+let currentTicketFilter = 'all';
+
 function showNewTicketsPanel() {
-    const viewEl = document.getElementById('createView');
-    if (!viewEl) return;
-    
-    // Hide original form, show simple list
-    const form = viewEl.querySelector('form');
-    if (form) form.style.display = 'none';
-    
     let listPanel = document.getElementById('newTicketsSimpleList');
     if (!listPanel) {
         listPanel = document.createElement('div');
         listPanel.id = 'newTicketsSimpleList';
-        listPanel.style.cssText = 'position:fixed;top:80px;left:20px;right:20px;bottom:80px;background:#0a0a1a;z-index:999999;padding:1rem;overflow-y:auto;border:2px solid #00d4ff;border-radius:12px;';
-        listPanel.innerHTML = '<h2 style="color:#00d4ff;margin-bottom:1rem;">Мои заявки</h2><div id="newTicketsListContent">Загрузка...</div>';
+        listPanel.style.cssText = 'position:fixed;top:70px;left:20px;right:20px;bottom:70px;background:linear-gradient(180deg,#0a0a1a 0%,#12121a 100%);z-index:999999;border:1px solid rgba(0,212,255,0.3);border-radius:16px;box-shadow:0 0 40px rgba(0,212,255,0.1);overflow:hidden;';
         document.body.appendChild(listPanel);
     }
-    listPanel.classList.remove('hidden');
     listPanel.style.display = 'block';
     
+    listPanel.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem;border-bottom:1px solid rgba(0,212,255,0.2);">
+            <h2 style="color:#00d4ff;margin:0;font-size:1.25rem;"><i class="fas fa-ticket-alt"></i> Мои заявки</h2>
+            <button onclick="closeNewTicketsPanel()" style="background:none;border:none;color:#666;font-size:1.5rem;cursor:pointer;">&times;</button>
+        </div>
+        <div style="display:flex;gap:0.5rem;padding:0.75rem;background:rgba(0,0,0,0.3);">
+            <button onclick="setTicketFilter('all')" class="filter-btn active" data-filter="all">Все</button>
+            <button onclick="setTicketFilter('new')" class="filter-btn" data-filter="new">Новые</button>
+            <button onclick="setTicketFilter('open')" class="filter-btn" data-filter="open">В работе</button>
+            <button onclick="setTicketFilter('resolved')" class="filter-btn" data-filter="resolved">Закрытые</button>
+        </div>
+        <div id="newTicketsListContent" style="padding:0.5rem;overflow-y:auto;height:calc(100%-120px);">Загрузка...</div>
+    `;
+    
+    loadNewTicketsList();
+}
+
+function closeNewTicketsPanel() {
+    const panel = document.getElementById('newTicketsSimpleList');
+    if (panel) panel.style.display = 'none';
+}
+
+function setTicketFilter(filter) {
+    currentTicketFilter = filter;
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === filter);
+        btn.style.background = btn.dataset.filter === filter ? 'rgba(0,212,255,0.2)' : 'transparent';
+        btn.style.border = btn.dataset.filter === filter ? '1px solid #00d4ff' : '1px solid rgba(255,255,255,0.1)';
+    });
     loadNewTicketsList();
 }
 
@@ -806,18 +828,49 @@ function loadNewTicketsList() {
     const content = document.getElementById('newTicketsListContent');
     if (!content) return;
     
+    content.innerHTML = '<p style="color:#666;text-align:center;padding:2rem;"><i class="fas fa-spinner fa-spin"></i> Загрузка...</p>';
+    
     fetch('/api/tickets/', {
         headers: { 'Authorization': 'Bearer ' + localStorage.getItem('access_token') }
     })
     .then(r => r.json())
     .then(tickets => {
-        content.innerHTML = tickets.map(t => 
-            '<div onclick="openTicketModal(' + t.id + ')" style="padding:1rem;margin-bottom:0.5rem;background:#1a1a3a;border-radius:8px;border-left:4px solid #00d4ff;cursor:pointer;color:#fff;font-size:1rem;">' +
-            '<strong style="color:#00d4ff;">#' + t.id + '</strong> ' + (t.title || 'Без заголовка') +
-            '</div>'
-        ).join('');
+        let filtered = tickets;
+        if (currentTicketFilter === 'new') {
+            filtered = tickets.filter(t => t.status_rel?.name === 'Новый');
+        } else if (currentTicketFilter === 'open') {
+            filtered = tickets.filter(t => t.status_rel?.name && t.status_rel.name !== 'Новый' && t.status_rel.name !== 'Закрыт' && t.status_rel.name !== 'Решён');
+        } else if (currentTicketFilter === 'resolved') {
+            filtered = tickets.filter(t => t.status_rel?.name === 'Закрыт' || t.status_rel?.name === 'Решён');
+        }
+        
+        if (filtered.length === 0) {
+            content.innerHTML = '<p style="color:#666;text-align:center;padding:2rem;">Нет заявок</p>';
+            return;
+        }
+        
+        content.innerHTML = filtered.map(t => {
+            const statusColor = t.status_rel?.name === 'Новый' ? '#3B82F6' : t.status_rel?.name === 'Закрыт' ? '#10B981' : '#F59E0B';
+            const priorityColor = t.priority === 'critical' ? '#EF4444' : t.priority === 'high' ? '#F59E0B' : '#00D4FF';
+            
+            return `<div style="padding:1rem;margin-bottom:0.5rem;background:linear-gradient(135deg,rgba(26,26,58,0.8) 0%,rgba(20,20,45,0.9) 100%);border-radius:12px;border-left:4px solid ${priorityColor};cursor:pointer;transition:all 0.2s;" 
+                onmouseover="this.style.background='rgba(0,212,255,0.1)'"
+                onmouseout="this.style.background='linear-gradient(135deg,rgba(26,26,58,0.8) 0%,rgba(20,20,45,0.9) 100%)'"
+                onclick="openTicketModal(${t.id});closeNewTicketsPanel();">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                    <span style="color:${priorityColor};font-weight:bold;font-size:1.1rem;">#${t.id}</span>
+                    <span style="background:${statusColor}22;color:${statusColor};padding:0.2rem 0.6rem;border-radius:20px;font-size:0.75rem;font-weight:600;">${t.status_rel?.name || 'Новый'}</span>
+                </div>
+                <div style="color:#fff;font-size:0.95rem;margin-bottom:0.5rem;">${t.title || 'Без заголовка'}</div>
+                <div style="display:flex;gap:1rem;font-size:0.8rem;color:#888;">
+                    <span><i class="fas fa-user"></i> ${t.creator?.email?.split('@')[0] || '-'}</span>
+                    <span><i class="fas fa-clock"></i> ${new Date(t.created_at).toLocaleDateString('ru')}</span>
+                    ${t.assignee ? `<span><i class="fas fa-user-check"></i> ${t.assignee.email?.split('@')[0]}</span>` : ''}
+                </div>
+            </div>`;
+        }).join('');
     })
-    .catch(e => content.innerHTML = 'Ошибка: ' + e.message);
+    .catch(e => content.innerHTML = '<p style="color:#EF4444;text-align:center;padding:2rem;">Ошибка: ' + e.message + '</p>');
 }
 
 async function loadOpenTickets() {
