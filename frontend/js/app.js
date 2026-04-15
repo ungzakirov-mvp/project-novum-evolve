@@ -805,7 +805,8 @@ async function loadOpenTickets() {
         }
         
         const tickets = await res.json();
-        console.log('Tickets:', tickets);
+        console.log('Tickets:', JSON.stringify(tickets).substring(0, 500));
+        console.log('First ticket keys:', Object.keys(tickets[0] || {}));
         
         if (!tickets || tickets.length === 0) {
             container.innerHTML = '<p style="color:var(--text-tertiary);font-size:0.85rem;">Нет заявок</p>';
@@ -817,11 +818,13 @@ async function loadOpenTickets() {
         tickets.forEach(t => {
             console.log('Ticket:', t.id, t.title, t.status);
             const div = document.createElement('div');
-            div.style.cssText = 'cursor:pointer;padding:0.5rem;margin-bottom:0.5rem;background:rgba(0,0,0,0.2);border-radius:8px;border-left:3px solid ' + (t.priority === 'critical' ? 'var(--jarvis-rose)' : t.priority === 'high' ? '#f59e0b' : 'var(--jarvis-cyan)') + ';';
+            div.style.cssText = 'cursor:pointer;padding:0.5rem;margin-bottom:0.5rem;background:#2a2a4a;border-radius:8px;display:flex;align-items:center;gap:0.5rem;';
             div.onclick = () => { console.log('Click ticket:', t.id); openTicketModal(t.id); };
-            div.innerHTML = '<div style="display:flex;justify-content:space-between;font-size:0.85rem;"><span style="color:var(--text-primary);font-weight:500;">#' + t.id + '</span><span style="color:var(--text-tertiary);font-size:0.75rem;">' + (t.status || 'open') + '</span></div><div style="font-size:0.8rem;color:var(--text-secondary);">' + (t.title || t.subject || 'Без заголовка').substring(0, 40) + '</div>';
+            div.innerHTML = '<span style="color:#00d4ff;font-weight:bold;">#' + t.id + '</span><span style="color:#fff;font-size:0.85rem;">' + (t.title || t.subject || 'Без заголовка').substring(0, 30) + '</span>';
             container.appendChild(div);
         });
+        
+        alert('Показано ' + tickets.length + ' заявок');
     } catch (e) {
         console.error('Load open tickets error:', e);
         container.innerHTML = '<p style="color:var(--jarvis-rose);font-size:0.85rem;">Ошибка: ' + e.message + '</p>';
