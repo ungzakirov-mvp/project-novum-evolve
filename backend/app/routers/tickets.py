@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import desc, func
 from typing import Optional, List
 from app.database import get_db
-from app.models import Ticket, User, TicketStatus, TicketTimeline, TimelineEventType, TicketPriority, UserRole
+from app.models import Ticket, User, TicketStatus, TicketTimeline, TimelineEventType, TicketPriority, UserRole, Attachment
 from app.dependencies import get_current_user
 from app.exceptions import ticket_not_found, unauthorized
 from app.services.sla_service import SLAService
@@ -419,3 +419,26 @@ def get_agent_stats(current_user: User = Depends(get_current_user), db: Session 
         avg_rating_res = db.query(sqlfunc.avg(Ticket.rating)).filter(Ticket.assigned_to == agent.id, Ticket.tenant_id == current_user.tenant_id, Ticket.rating != None).scalar()
         stats.append(schemas.AgentPerformance(agent_id=agent.id, full_name=agent.full_name, resolved_count=resolved, avg_resolution_hours=None, sla_compliance_rate=round(float(avg_rating_res), 1) if avg_rating_res else None))
     return stats
+
+
+@router.get("/{ticket_id}/attachments", response_model=List[schemas.AttachmentResponse])
+def get_ticket_attachments(
+    ticket_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Получить вложения тикета"""
+    ticket = db.query(Ticket).filter(
+        Ticket.id == ticket_id,
+        Ticket.tenant_id == current_user.tenant_id
+    ).first()
+    
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Тикет не найден")
+    
+    attachments = db.query(Attachment).filter(
+        Attachment.ticket_id == ticket_id,
+        Attachment.tenant_id == current_user.tenant_id
+    ).all()
+    
+    return attachments

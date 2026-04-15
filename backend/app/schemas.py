@@ -227,6 +227,8 @@ class AttachmentResponse(BaseModel):
     filename: str
     file_size: int
     mime_type: Optional[str]
+    file_path: Optional[str]
+    url: Optional[str]
     created_at: datetime
     uploaded_by: int
     
