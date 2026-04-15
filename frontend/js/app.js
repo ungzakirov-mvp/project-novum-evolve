@@ -783,36 +783,40 @@ async function loadOpenTickets() {
     const container = document.getElementById('openTicketsList');
     if (!container) return;
     
+    container.innerHTML = '<p style="color:var(--text-tertiary);font-size:0.85rem;">Загрузка...</p>';
+    
     try {
-        const res = await fetch('/api/tickets?limit=50', {
+        const res = await fetch('/api/tickets/', {
             headers: { 'Authorization': `Bearer ${localStorage.getItem('access_token')}` }
         });
         
+        console.log('Tickets response:', res.status);
+        
         if (!res.ok) {
-            container.innerHTML = '<p style="color:var(--jarvis-rose);font-size:0.85rem;">Ошибка загрузки</p>';
+            container.innerHTML = '<p style="color:var(--jarvis-rose);font-size:0.85rem;">Ошибка: ' + res.status + '</p>';
             return;
         }
         
         const tickets = await res.json();
-        const openTickets = tickets.filter(t => t.status !== 'closed' && t.status !== 'resolved');
+        console.log('Tickets:', tickets);
         
-        if (openTickets.length === 0) {
-            container.innerHTML = '<p style="color:var(--text-tertiary);font-size:0.85rem;">Нет открытых заявок</p>';
+        if (!tickets || tickets.length === 0) {
+            container.innerHTML = '<p style="color:var(--text-tertiary);font-size:0.85rem;">Нет заявок</p>';
             return;
         }
         
-        container.innerHTML = openTickets.map(t => `
+        container.innerHTML = tickets.map(t => `
             <div onclick="openTicketModal(${t.id})" style="cursor:pointer;padding:0.5rem;margin-bottom:0.5rem;background:rgba(0,0,0,0.2);border-radius:8px;border-left:3px solid ${t.priority === 'critical' ? 'var(--jarvis-rose)' : t.priority === 'high' ? '#f59e0b' : 'var(--jarvis-cyan)'};">
                 <div style="display:flex;justify-content:space-between;font-size:0.85rem;">
                     <span style="color:var(--text-primary);font-weight:500;">#${t.id}</span>
                     <span style="color:var(--text-tertiary);font-size:0.75rem;">${t.status}</span>
                 </div>
-                <div style="font-size:0.8rem;color:var(--text-secondary);">${t.title?.substring(0, 40) || 'Без заголовка'}${t.title?.length > 40 ? '...' : ''}</div>
+                <div style="font-size:0.8rem;color:var(--text-secondary);">${(t.title || t.subject || 'Без заголовка').substring(0, 40)}${((t.title || t.subject) || '').length > 40 ? '...' : ''}</div>
             </div>
         `).join('');
     } catch (e) {
         console.error('Load open tickets error:', e);
-        container.innerHTML = '<p style="color:var(--jarvis-rose);font-size:0.85rem;">Ошибка загрузки</p>';
+        container.innerHTML = '<p style="color:var(--jarvis-rose);font-size:0.85rem;">Ошибка: ' + e.message + '</p>';
     }
 }
 
