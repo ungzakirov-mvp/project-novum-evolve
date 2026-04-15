@@ -775,7 +775,49 @@ function showView(viewName) {
         loadAssetsView();
 } else if (viewName === 'createView') {
         loadOpenTickets();
+    } else if (viewName === 'newTicketsView') {
+        showNewTicketsPanel();
     }
+}
+
+function showNewTicketsPanel() {
+    const viewEl = document.getElementById('createView');
+    if (!viewEl) return;
+    
+    // Hide original form, show simple list
+    const form = viewEl.querySelector('form');
+    if (form) form.style.display = 'none';
+    
+    let listPanel = document.getElementById('newTicketsSimpleList');
+    if (!listPanel) {
+        listPanel = document.createElement('div');
+        listPanel.id = 'newTicketsSimpleList';
+        listPanel.style.cssText = 'position:fixed;top:80px;left:20px;right:20px;bottom:80px;background:#0a0a1a;z-index:999999;padding:1rem;overflow-y:auto;border:2px solid #00d4ff;border-radius:12px;';
+        listPanel.innerHTML = '<h2 style="color:#00d4ff;margin-bottom:1rem;">Мои заявки</h2><div id="newTicketsListContent">Загрузка...</div>';
+        document.body.appendChild(listPanel);
+    }
+    listPanel.classList.remove('hidden');
+    listPanel.style.display = 'block';
+    
+    loadNewTicketsList();
+}
+
+function loadNewTicketsList() {
+    const content = document.getElementById('newTicketsListContent');
+    if (!content) return;
+    
+    fetch('/api/tickets/', {
+        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('access_token') }
+    })
+    .then(r => r.json())
+    .then(tickets => {
+        content.innerHTML = tickets.map(t => 
+            '<div onclick="openTicketModal(' + t.id + ')" style="padding:1rem;margin-bottom:0.5rem;background:#1a1a3a;border-radius:8px;border-left:4px solid #00d4ff;cursor:pointer;color:#fff;font-size:1rem;">' +
+            '<strong style="color:#00d4ff;">#' + t.id + '</strong> ' + (t.title || 'Без заголовка') +
+            '</div>'
+        ).join('');
+    })
+    .catch(e => content.innerHTML = 'Ошибка: ' + e.message);
 }
 
 async function loadOpenTickets() {
