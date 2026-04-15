@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Desk | Рабочее место агента</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/agent.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="agent-layout">
+        <!-- 1. Sidebar -->
+        <nav class="sidebar">
+            <a href="#" class="nav-icon active" title="Входящие">
+                <i class="fa-solid fa-inbox"></i>
+            </a>
+            <a href="#" class="nav-icon" title="Мои задачи">
+                <i class="fa-solid fa-list-check"></i>
+            </a>
+            <a href="#" class="nav-icon" title="Клиенты">
+                <i class="fa-solid fa-users"></i>
+            </a>
+            <a href="#" class="nav-icon" title="Аналитика">
+                <i class="fa-solid fa-chart-pie"></i>
+            </a>
+            <a href="#" class="nav-icon" id="createNewTicketBtn" title="Создать тикет"
+                style="color: var(--accent-primary)">
+                <i class="fa-solid fa-circle-plus"></i>
+            </a>
+
+            <div style="flex: 1"></div>
+
+            <a href="#" class="nav-icon" title="Настройки">
+                <i class="fa-solid fa-cog"></i>
+            </a>
+            <div class="user-avatar" id="currentUserAvatar" title="Профиль">
+                A
+            </div>
+            <a href="#" class="nav-icon" id="logoutBtn" title="Выйти" style="margin-top: 0.5rem">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </a>
+        </nav>
+
+        <!-- 2, 3, 4. Views Container -->
+        <main class="views-container">
+            <!-- Inbox View -->
+            <div id="inboxView" class="workspace-view active">
+                <div class="ticket-list-panel">
+                    <div class="list-header">
+                        <input type="text" class="search-bar" placeholder="Поиск тикетов...">
+                        <div class="filter-tabs">
+                            <div class="filter-tab active" data-filter="all">Все</div>
+                            <div class="filter-tab" data-filter="my">Мои</div>
+                            <div class="filter-tab" data-filter="unassigned">Неназначенные</div>
+                        </div>
+                    </div>
+
+                    <div class="tickets-scroll" id="ticketList">
+                        <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                            <i class="fa-solid fa-spinner fa-spin"></i> Загрузка...
+                        </div>
+                    </div>
+                </div>
+
+                <div class="main-stage">
+                    <div class="stage-header" id="stageHeader">
+                        <div>
+                            <div class="stage-title" id="activeTicketTitle">Выберите тикет</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted);" id="activeTicketId">...</div>
+                        </div>
+                        <div class="stage-actions" id="stageActions"
+                            style="display: flex; gap: 1rem; align-items: center;">
+                            <select class="search-bar" id="ticketStatusSelect" style="width: auto; margin: 0;">
+                                <option value="">Статус...</option>
+                            </select>
+                            <select class="search-bar" id="ticketPrioritySelect" style="width: auto; margin: 0;">
+                                <option value="LOW">Низкий</option>
+                                <option value="MEDIUM" selected>Средний</option>
+                                <option value="HIGH">Высокий</option>
+                                <option value="URGENT">Критичный</option>
+                            </select>
+                            <select class="search-bar" id="ticketAssignSelect" style="width: auto; margin: 0;">
+                                <option value="">Назначить...</option>
+                            </select>
+                            
+                            <!-- New Feature Buttons -->
+                            <button class="btn btn-small feature-btn" id="btnTimer" title="Запустить таймер" style="background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(124,58,237,0.1)) !important; border: 1px solid rgba(0,212,255,0.3) !important; color: var(--jarvis-cyan) !important; display: inline-flex !important; visibility: visible !important; opacity: 1 !important;">
+                                <i class="fas fa-play"></i> Таймер
+                            </button>
+                            <button class="btn btn-small feature-btn" id="btnChecklist" title="Добавить чек-лист" style="background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.1)) !important; border: 1px solid rgba(16,185,129,0.3) !important; color: var(--jarvis-emerald) !important; display: inline-flex !important; visibility: visible !important; opacity: 1 !important;">
+                                <i class="fas fa-tasks"></i> Чек-лист
+                            </button>
+                            <button class="btn btn-small feature-btn" id="btnInternalNote" title="Приватная заметка" style="background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.1)) !important; border: 1px solid rgba(139,92,246,0.3) !important; color: var(--jarvis-violet) !important; display: inline-flex !important; visibility: visible !important; opacity: 1 !important;">
+                                <i class="fas fa-lock"></i> Заметка
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="timeline-scroll" id="timelineScroll">
+                        <div style="text-align: center; margin-top: 5rem; color: var(--text-muted);">
+                            Выберите тикет из списка слева, чтобы начать работу.
+                        </div>
+                    </div>
+
+                    <!-- Checklists Panel -->
+                    <div class="checklist-container feature-panel" id="checklistPanel" style="margin-bottom: 1rem; display: none;">
+                        <div class="checklist-header">
+                            <div class="checklist-title">
+                                <i class="fas fa-tasks" style="color: var(--jarvis-cyan);"></i>
+                                Чек-лист выполнения
+                            </div>
+                            <div class="checklist-progress" id="checklistProgress">0/0</div>
+                        </div>
+                        <div class="checklist-items" id="checklistItems">
+                            <!-- Items loaded via JS -->
+                        </div>
+                        <div class="checklist-add">
+                            <input type="text" id="newChecklistItem" placeholder="Добавить пункт...">
+                            <button class="checklist-add-btn" onclick="addChecklistItem()">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Internal Notes Panel -->
+                    <div class="internal-notes-panel feature-panel" id="internalNotesPanel" style="display: none;">
+                        <div class="internal-notes-header">
+                            <i class="fas fa-lock"></i>
+                            <h4>Приватные заметки (видны только агентам)</h4>
+                        </div>
+                        <div class="internal-notes-list" id="internalNotesList">
+                            <!-- Notes loaded via JS -->
+                        </div>
+                        <div class="internal-note-input">
+                            <textarea id="internalNoteText" placeholder="Добавить внутреннюю заметку..."></textarea>
+                            <button class="btn btn-primary" onclick="addInternalNote()">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="reply-box hidden" id="replyBox">
+                        <div class="canned-responses-trigger" style="position: relative;">
+                            <textarea class="reply-editor" id="replyEditor" placeholder="Напишите ответ... (Enter для отправки, / для шаблонов)"></textarea>
+                            <div class="canned-responses-dropdown hidden" id="cannedResponsesDropdown">
+                                <!-- Templates loaded via JS -->
+                            </div>
+                        </div>
+                        <div class="reply-actions">
+                            <div style="display: flex; gap: 0.5rem">
+                                <button class="btn btn-small" style="background: rgba(255,255,255,0.1)" title="Прикрепить файл">
+                                    <i class="fa-solid fa-paperclip"></i>
+                                </button>
+                                <button class="btn btn-small" id="showCannedResponsesBtn" style="background: rgba(255,255,255,0.1)" title="Шаблоны ответов">
+                                    <i class="fas fa-bolt"></i> Шаблоны
+                                </button>
+                                <button class="btn btn-small" id="startTimerBtn" style="background: rgba(255,255,255,0.1)" title="Начать таймер">
+                                    <i class="fas fa-play"></i> Таймер
+                                </button>
+                            </div>
+                            <div style="display: flex; gap: 1rem; align-items: center;">
+                                <label style="font-size: 0.85rem; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox" id="internalNoteToggle"> Внутренняя заметка
+                                </label>
+                            </div>
+                            <button class="btn btn-primary btn-small" id="sendReplyBtn">Отправить</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="meta-panel" id="metaPanel">
+                    <div class="meta-section">
+                        <div class="meta-label">Клиент</div>
+                        <div class="meta-value" id="metaClient">-</div>
+                    </div>
+                    <div class="meta-section">
+                        <div class="meta-label">Организация</div>
+                        <div class="meta-value" id="metaCompany">-</div>
+                    </div>
+                    <div class="meta-section">
+                        <div class="meta-label">Приоритет</div>
+                        <div class="meta-value" id="metaPriority">-</div>
+                    </div>
+                    <div class="meta-section">
+                        <div class="meta-label">SLA Решение</div>
+                        <div class="meta-value sla-timer" id="metaSla">-</div>
+                    </div>
+                    <div class="meta-section">
+                        <div class="meta-label">Исполнитель</div>
+                        <div class="meta-value" id="metaAssignee">-</div>
+                    </div>
+
+                    <!-- Time Summary -->
+                    <div class="meta-section" id="timeSummarySection" style="display: none;">
+                        <div class="meta-label">Затраченное время</div>
+                        <div class="meta-value">
+                            <span class="time-summary-badge" id="timeSummaryBadge">
+                                <i class="fas fa-clock"></i>
+                                <span id="timeSummaryValue">0ч 0м</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Customer Assets -->
+                    <div class="meta-section" id="assetsSection">
+                        <div class="meta-label" style="display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-desktop" style="color: var(--jarvis-cyan);"></i>
+                            Оборудование клиента
+                        </div>
+                        <div class="assets-list" id="customerAssetsList" style="margin-top: 0.75rem;">
+                            <div style="color: var(--text-tertiary); font-size: 0.85rem;">Загрузка...</div>
+                        </div>
+                        <button class="btn btn-outline btn-small" onclick="showAddAssetModal()" style="margin-top: 0.75rem; width: 100%;">
+                            <i class="fas fa-plus"></i> Добавить оборудование
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics View -->
+            <div id="analyticsView" class="workspace-view hidden">
+                <div class="view-header">
+                    <h1>Аналитика и отчеты</h1>
+                </div>
+                <div class="analytics-grid">
+                    <div class="stat-card">
+                        <h3>Объем тикетов (7 дн)</h3>
+                        <div id="volumeChart" class="chart-container">
+                            <div class="loading-placeholder">Загрузка данных...</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Эффективность агентов</h3>
+                        <div id="agentLeaderboard" class="leaderboard-container">
+                            <!-- Loaded via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CRM View -->
+            <div id="crmView" class="workspace-view hidden">
+                <div class="view-header">
+                    <h1>База клиентов</h1>
+                </div>
+                <div class="crm-content">
+                    <div class="crm-toolbar">
+                        <input type="text" id="crmSearch" class="search-bar" placeholder="Поиск по имени или email...">
+                    </div>
+                    <table class="crm-table">
+                        <thead>
+                            <tr>
+                                <th>Имя</th>
+                                <th>Email</th>
+                                <th>Создан</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="crmTableBody">
+                            <!-- Loaded via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div id="settingsView" class="workspace-view hidden">
+                <div class="view-header">
+                    <h1>Настройки профиля</h1>
+                </div>
+                <div class="settings-content glass-card" style="max-width: 600px; margin: 2rem; padding: 2rem;">
+                    <form id="settingsForm">
+                        <div class="form-group">
+                            <label>Полное имя</label>
+                            <input type="text" id="settingsFullName" placeholder="Имя Фамилия">
+                        </div>
+                        <div class="form-group">
+                            <label>Email (только чтение)</label>
+                            <input type="email" id="settingsEmail" readonly style="opacity: 0.6">
+                        </div>
+                        <div class="form-group">
+                            <label>Новый пароль (оставьте пустым, если не хотите менять)</label>
+                            <input type="password" id="settingsPassword" placeholder="••••••••">
+                        </div>
+                        <div style="margin-top: 2rem;">
+                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create Ticket Modal -->
+    <div id="createTicketModal" class="modal hidden">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h2>Создать новый тикет</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="createTicketForm">
+                <div class="form-group">
+                    <label>Заголовок</label>
+                    <input type="text" id="newTicketTitle" placeholder="Краткое описание проблемы" required>
+                </div>
+                <div class="form-group">
+                    <label>Email клиента</label>
+                    <input type="email" id="newTicketClientEmail" placeholder="client@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Приоритет</label>
+                    <select id="newTicketPriority">
+                        <option value="low">Низкий</option>
+                        <option value="medium" selected>Средний</option>
+                        <option value="high">Высокий</option>
+                        <option value="critical">Критический</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Описание</label>
+                    <textarea id="newTicketDescription" rows="5" placeholder="Подробности проблемы..."
+                        required></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">Создать тикет</button>
+                    <button type="button" class="btn btn-secondary close-modal">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Time Tracker Widget -->
+    <div class="time-tracker-widget feature-panel" id="timeTrackerWidget" style="display: none;">
+        <div class="scan-line"></div>
+        <div class="time-tracker-header">
+            <div class="time-tracker-icon">
+                <i class="fas fa-stopwatch"></i>
+            </div>
+            <div class="time-tracker-timer" id="timerDisplay">00:00:00</div>
+        </div>
+        <div class="time-tracker-ticket" id="timerTicketInfo">Тикет #123</div>
+        <div class="time-tracker-controls">
+            <button class="time-tracker-btn stop" id="stopTimerBtn" onclick="stopTimer()">
+                <i class="fas fa-stop"></i> Стоп
+            </button>
+        </div>
+    </div>
+
+    <!-- CSAT Rating Modal -->
+    <div class="rating-modal-overlay hidden" id="ratingModal">
+        <div class="rating-modal">
+            <div class="rating-modal-icon">
+                <i class="fas fa-star"></i>
+            </div>
+            <h3>Оцените работу агента</h3>
+            <p>Ваш тикет закрыт. Пожалуйста, оцените качество решения.</p>
+            <div class="rating-stars" id="ratingStars">
+                <i class="fas fa-star rating-star" data-rating="1"></i>
+                <i class="fas fa-star rating-star" data-rating="2"></i>
+                <i class="fas fa-star rating-star" data-rating="3"></i>
+                <i class="fas fa-star rating-star" data-rating="4"></i>
+                <i class="fas fa-star rating-star" data-rating="5"></i>
+            </div>
+            <textarea class="rating-comment" id="ratingComment" placeholder="Что понравилось? Что можно улучшить?"></textarea>
+            <button class="rating-submit-btn" onclick="submitRating()">Отправить оценку</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js?v=1.0.1"></script>
+    <script src="js/features-api.js?v=1.0.1"></script>
+    <script src="js/notification_center.js?v=1.0.1"></script>
+    <script src="js/agent.js?v=1.0.1"></script>
+    <script src="js/features-agent.js?v=1.0.1"></script>
+</body>
+
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEST - New Features</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            padding: 2rem;
+            background: var(--bg-app);
+        }
+        .test-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+        }
+        h2 {
+            color: var(--jarvis-cyan);
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="color: white; margin-bottom: 2rem;">🧪 ТЕСТ НОВЫХ ФУНКЦИЙ</h1>
+
+    <!-- Test 1: Buttons -->
+    <div class="test-section">
+        <h2>1. Кнопки функций</h2>
+        <div style="display: flex; gap: 1rem;">
+            <button class="btn btn-small" style="background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(124,58,237,0.1)); border: 1px solid rgba(0,212,255,0.3); color: var(--jarvis-cyan);">
+                <i class="fas fa-play"></i> Таймер
+            </button>
+            <button class="btn btn-small" style="background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.1)); border: 1px solid rgba(16,185,129,0.3); color: var(--jarvis-emerald);">
+                <i class="fas fa-tasks"></i> Чек-лист
+            </button>
+            <button class="btn btn-small" style="background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.1)); border: 1px solid rgba(139,92,246,0.3); color: var(--jarvis-violet);">
+                <i class="fas fa-lock"></i> Заметка
+            </button>
+        </div>
+    </div>
+
+    <!-- Test 2: Time Tracker Widget -->
+    <div class="test-section">
+        <h2>2. Виджет таймера</h2>
+        <div class="time-tracker-widget" style="position: relative; bottom: auto; right: auto;">
+            <div class="scan-line"></div>
+            <div class="time-tracker-header">
+                <div class="time-tracker-icon">
+                    <i class="fas fa-stopwatch"></i>
+                </div>
+                <div class="time-tracker-timer">00:15:42</div>
+            </div>
+            <div class="time-tracker-ticket">Тикет #123</div>
+            <div class="time-tracker-controls">
+                <button class="time-tracker-btn stop">
+                    <i class="fas fa-stop"></i> Стоп
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test 3: Checklist -->
+    <div class="test-section">
+        <h2>3. Чек-лист</h2>
+        <div class="checklist-container">
+            <div class="checklist-header">
+                <div class="checklist-title">
+                    <i class="fas fa-tasks" style="color: var(--jarvis-cyan);"></i>
+                    Чек-лист выполнения
+                </div>
+                <div class="checklist-progress">1/3</div>
+            </div>
+            <div class="checklist-items">
+                <div class="checklist-item completed">
+                    <div class="checklist-checkbox checked">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="checklist-content">
+                        <div class="checklist-text">Диагностика сети</div>
+                    </div>
+                </div>
+                <div class="checklist-item">
+                    <div class="checklist-checkbox"></div>
+                    <div class="checklist-content">
+                        <div class="checklist-text">Перезагрузка роутера</div>
+                    </div>
+                </div>
+            </div>
+            <div class="checklist-add">
+                <input type="text" placeholder="Добавить пункт...">
+                <button class="checklist-add-btn">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test 4: Internal Notes -->
+    <div class="test-section">
+        <h2>4. Приватные заметки</h2>
+        <div class="internal-notes-panel">
+            <div class="internal-notes-header">
+                <i class="fas fa-lock"></i>
+                <h4>Приватные заметки (видны только агентам)</h4>
+            </div>
+            <div class="internal-notes-list">
+                <div class="internal-note-item">
+                    <div class="internal-note-header">
+                        <span class="internal-note-author">Иван Петров</span>
+                        <span class="internal-note-date">14.04.2025 15:30</span>
+                    </div>
+                    <div class="internal-note-content">Клиенту нужно обновить драйвера сетевой карты</div>
+                </div>
+            </div>
+            <div class="internal-note-input">
+                <textarea placeholder="Добавить заметку..."></textarea>
+                <button class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test 5: Rating Modal -->
+    <div class="test-section">
+        <h2>5. Модальное окно оценки</h2>
+        <button class="btn btn-primary" onclick="document.getElementById('testRatingModal').style.display='flex'">
+            Показать модальное окно
+        </button>
+    </div>
+
+    <!-- Test Modal -->
+    <div class="rating-modal-overlay" id="testRatingModal" style="display: none; position: fixed;">
+        <div class="rating-modal">
+            <div class="rating-modal-icon">
+                <i class="fas fa-star"></i>
+            </div>
+            <h3>Оцените работу агента</h3>
+            <p>Ваш тикет закрыт. Пожалуйста, оцените качество решения.</p>
+            <div class="rating-stars">
+                <i class="fas fa-star rating-star active"></i>
+                <i class="fas fa-star rating-star active"></i>
+                <i class="fas fa-star rating-star active"></i>
+                <i class="fas fa-star rating-star active"></i>
+                <i class="fas fa-star rating-star"></i>
+            </div>
+            <textarea class="rating-comment" placeholder="Что понравилось? Что можно улучшить?"></textarea>
+            <button class="rating-submit-btn">Отправить оценку</button>
+        </div>
+    </div>
+
+    <!-- Test 6: Assets -->
+    <div class="test-section">
+        <h2>6. Оборудование клиента</h2>
+        <div class="assets-grid" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); display: grid; gap: 1rem;">
+            <div class="asset-card">
+                <div class="asset-header">
+                    <div class="asset-icon computer">
+                        <i class="fas fa-desktop"></i>
+                    </div>
+                    <div class="asset-title">
+                        <div class="asset-name">PC-001</div>
+                        <div class="asset-model">Dell OptiPlex 7090</div>
+                    </div>
+                    <span class="asset-status active">Активно</span>
+                </div>
+                <div class="asset-details">
+                    <div class="asset-detail">
+                        <div class="asset-detail-label">CPU</div>
+                        <div class="asset-detail-value">Intel i7-10700</div>
+                    </div>
+                    <div class="asset-detail">
+                        <div class="asset-detail-label">RAM</div>
+                        <div class="asset-detail-value">16 GB</div>
+                    </div>
+                </div>
+                <div class="asset-actions">
+                    <button class="asset-btn primary">
+                        <i class="fas fa-desktop"></i> TeamViewer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

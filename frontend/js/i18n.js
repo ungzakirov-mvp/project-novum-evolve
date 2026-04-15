@@ -1,0 +1,669 @@
+// NOVUM Service Desk - i18n Module (RU/EN/UZ)
+const i18n = {
+    currentLocale: localStorage.getItem('locale') || 'ru',
+
+    translations: {
+        ru: {
+            // Navigation
+            dashboard: 'Дашборд',
+            tickets: 'Заявки',
+            crm: 'Компании',
+            kb: 'База знаний',
+            new_ticket: 'Новая заявка',
+            logout: 'Выйти',
+            login: 'Вход',
+            register: 'Регистрация',
+            users: 'Пользователи',
+            audit: 'Аудит',
+            
+            // Dashboard
+            total_tickets: 'Всего заявок',
+            active_users: 'Сотрудников',
+            sla_compliance: 'SLA выполнение',
+            avg_resolution: 'Ср. время решения',
+            recent_tickets: 'Последние заявки',
+            all: 'Все',
+            new: 'Новые',
+            in_progress: 'В работе',
+            resolved: 'Решённые',
+            
+            // Tickets
+            ticket_id: '№',
+            title: 'Заголовок',
+            description: 'Описание',
+            priority: 'Приоритет',
+            status: 'Статус',
+            created: 'Создана',
+            assigned_to: 'Исполнитель',
+            actions: 'Действия',
+            accept: 'Принять',
+            close: 'Закрыть',
+            assign: 'Назначить',
+            rate: 'Оценить',
+            
+            // Priorities
+            low: 'Низкий',
+            medium: 'Средний',
+            high: 'Высокий',
+            critical: 'Критичный',
+            
+            // Statuses
+            status_new: 'Новая',
+            status_open: 'Открыта',
+            status_in_progress: 'В работе',
+            status_waiting: 'Ожидание',
+            status_resolved: 'Решена',
+            status_closed: 'Закрыта',
+            
+            // CRM
+            companies: 'Компании',
+            new_company: 'Новая компания',
+            company_name: 'Название',
+            legal_name: 'Юр. название',
+            inn: 'ИНН',
+            industry: 'Отрасль',
+            phone: 'Телефон',
+            email: 'Email',
+            website: 'Веб-сайт',
+            address: 'Адрес',
+            contacts: 'Контакты',
+            subscriptions: 'Подписки',
+            employees: 'Сотрудники',
+            
+            // Industries
+            it: 'IT и технологии',
+            trade: 'Торговля',
+            manufacturing: 'Производство',
+            finance: 'Финансы',
+            medicine: 'Медицина',
+            education: 'Образование',
+            logistics: 'Логистика',
+            construction: 'Строительство',
+            horeca: 'HoReCa',
+            other: 'Другое',
+            
+            // Actions
+            save: 'Сохранить',
+            cancel: 'Отмена',
+            delete: 'Удалить',
+            edit: 'Редактировать',
+            create: 'Создать',
+            search: 'Поиск',
+            filter: 'Фильтр',
+            refresh: 'Обновить',
+            
+            // Form labels
+            full_name: 'ФИО',
+            position: 'Должность',
+            department: 'Отдел',
+            role: 'Роль',
+            agent: 'Агент',
+            admin: 'Админ',
+            client: 'Клиент',
+            
+            // Misc
+            loading: 'Загрузка...',
+            no_data: 'Нет данных',
+            confirm_delete: 'Удалить?',
+            scheduled_date: 'Запланировано на',
+            sla_timer: 'SLA таймер',
+            
+            // KB
+            search_kb: 'Поиск по базе знаний...',
+            categories: 'Категории',
+            articles: 'Статьи',
+            
+            // Audit
+            audit_log: 'Журнал аудита',
+            action: 'Действие',
+            date: 'Дата',
+            user: 'Пользователь',
+            
+            // Auth
+            email: 'Email',
+            password: 'Пароль',
+            confirm_password: 'Подтвердите пароль',
+            forgot_password: 'Забыли пароль?',
+            no_account: 'Нет аккаунта?',
+            has_account: 'Уже есть аккаунт?',
+            login_btn: 'Войти',
+            register_btn: 'Зарегистрироваться',
+            create_account: 'Создать аккаунт',
+            register_tagline: 'Создайте новый аккаунт',
+            tagline: 'Премиальная система управления заявками',
+            
+            // Notifications
+            notifications: 'Уведомления',
+            mark_all_read: 'Все прочитано',
+            no_notifications: 'Нет новых уведомлений',
+            
+            // Dashboard extra
+            agent_rating: 'Рейтинг исполнителей',
+            requester_rating: 'Рейтинг заказчиков',
+            upcoming_deadlines: 'Ближайшие дедлайны',
+            ticket_statuses: 'Статусы заявок',
+            completion_trend: 'Тренд выполнения (7 дней)',
+            
+            // Users & Access
+            access_management: 'Управление доступом',
+            users_and_orgs: 'Пользователи и организации',
+            add_company_short: '+ Организация',
+            add_user_short: '+ Пользователь',
+            search_user_placeholder: 'Поиск пользователя...',
+            all_roles: 'Все роли',
+            admins: 'Администраторы',
+            agents: 'Агенты',
+            clients: 'Клиенты',
+            name: 'Имя',
+            organization: 'Организация',
+            time: 'Время',
+            object: 'Объект',
+            ip_address: 'IP Адрес',
+            details: 'Детали',
+            audit_description: 'История критических действий в системе',
+            new_category: '+ Категория',
+            new_article: 'Новая статья',
+            
+            // Tickets extra
+            all_tickets: 'Все тикеты',
+            all_statuses: 'Все статусы',
+            all_priorities: 'Все приоритеты',
+            new_ticket_subtitle: 'Создайте новую заявку на техническую поддержку',
+            step_basic: 'Основное',
+            step_details: 'Детали',
+            step_submit: 'Отправка',
+            
+            // Extra keys
+            not_selected: 'Не выбрано',
+            basic_info: 'Основная информация',
+            address_and_desc: 'Адрес и описание',
+            domain: 'Домен',
+            organization_crm: 'Организация (CRM)',
+            company_required_hint: 'Для клиентов привязка к организации обязательна для доступа к общим тикетам.',
+            new_user: 'Новый пользователь',
+            role_client: 'Клиент (Client)',
+            role_agent: 'Агент (Agent)',
+            role_admin: 'Администратор (Admin)',
+            edit_company: 'Редактировать организацию',
+            edit_user: 'Редактировать пользователя',
+            new_password: 'Новый пароль (оставьте пустым)',
+            
+            // Create Ticket Form
+            create_ticket: 'Создать заявку',
+            ticket_title: 'Заголовок заявки',
+            ticket_title_placeholder: 'Краткое описание проблемы',
+            priority_low: 'Низкий',
+            priority_low_desc: 'Некритичная проблема',
+            priority_medium: 'Средний',
+            priority_medium_desc: 'Обычная заявка',
+            priority_high: 'Высокий',
+            priority_high_desc: 'Важная проблема',
+            priority_critical: 'Критичный',
+            priority_critical_desc: 'Срочно!',
+            description_placeholder: 'Подробно опишите проблему...',
+            schedule_for: 'Запланировать на',
+            assign_agent: 'Назначить агента',
+            auto_assign: 'Автоматически',
+            attachments: 'Вложения',
+            drop_files: 'Перетащите файлы сюда или',
+            select_files: 'выберите',
+            max_file_size: 'Макс. размер: 10MB',
+        },
+        
+        en: {
+            // Navigation
+            dashboard: 'Dashboard',
+            tickets: 'Tickets',
+            crm: 'Companies',
+            kb: 'Knowledge Base',
+            new_ticket: 'New Ticket',
+            logout: 'Logout',
+            login: 'Login',
+            register: 'Register',
+            users: 'Users',
+            audit: 'Audit',
+            
+            // Dashboard
+            total_tickets: 'Total Tickets',
+            active_users: 'Employees',
+            sla_compliance: 'SLA Compliance',
+            avg_resolution: 'Avg Resolution Time',
+            recent_tickets: 'Recent Tickets',
+            all: 'All',
+            new: 'New',
+            in_progress: 'In Progress',
+            resolved: 'Resolved',
+            
+            // Tickets
+            ticket_id: 'ID',
+            title: 'Title',
+            description: 'Description',
+            priority: 'Priority',
+            status: 'Status',
+            created: 'Created',
+            assigned_to: 'Assignee',
+            actions: 'Actions',
+            accept: 'Accept',
+            close: 'Close',
+            assign: 'Assign',
+            rate: 'Rate',
+            
+            // Priorities
+            low: 'Low',
+            medium: 'Medium',
+            high: 'High',
+            critical: 'Critical',
+            
+            // Statuses
+            status_new: 'New',
+            status_open: 'Open',
+            status_in_progress: 'In Progress',
+            status_waiting: 'Waiting',
+            status_resolved: 'Resolved',
+            status_closed: 'Closed',
+            
+            // CRM
+            companies: 'Companies',
+            new_company: 'New Company',
+            company_name: 'Company Name',
+            legal_name: 'Legal Name',
+            inn: 'TIN',
+            industry: 'Industry',
+            phone: 'Phone',
+            email: 'Email',
+            website: 'Website',
+            address: 'Address',
+            contacts: 'Contacts',
+            subscriptions: 'Subscriptions',
+            employees: 'Employees',
+            
+            // Industries
+            it: 'IT & Technology',
+            trade: 'Trade',
+            manufacturing: 'Manufacturing',
+            finance: 'Finance',
+            medicine: 'Medicine',
+            education: 'Education',
+            logistics: 'Logistics',
+            construction: 'Construction',
+            horeca: 'HoReCa',
+            other: 'Other',
+            
+            // Actions
+            save: 'Save',
+            cancel: 'Cancel',
+            delete: 'Delete',
+            edit: 'Edit',
+            create: 'Create',
+            search: 'Search',
+            filter: 'Filter',
+            refresh: 'Refresh',
+            
+            // Form labels
+            full_name: 'Full Name',
+            position: 'Position',
+            department: 'Department',
+            role: 'Role',
+            agent: 'Agent',
+            admin: 'Admin',
+            client: 'Client',
+            
+            // Misc
+            loading: 'Loading...',
+            no_data: 'No data',
+            confirm_delete: 'Delete?',
+            scheduled_date: 'Scheduled for',
+            sla_timer: 'SLA Timer',
+            
+            // KB
+            search_kb: 'Search knowledge base...',
+            categories: 'Categories',
+            articles: 'Articles',
+            
+            // Audit
+            audit_log: 'Audit Log',
+            action: 'Action',
+            date: 'Date',
+            user: 'User',
+            
+            // Auth
+            email: 'Email',
+            password: 'Password',
+            confirm_password: 'Confirm Password',
+            forgot_password: 'Forgot password?',
+            no_account: 'No account?',
+            has_account: 'Already have an account?',
+            login_btn: 'Login',
+            register_btn: 'Register',
+            create_account: 'Create Account',
+            register_tagline: 'Create a new account',
+            tagline: 'Premium Help Desk System',
+            
+            // Notifications
+            notifications: 'Notifications',
+            mark_all_read: 'Mark all read',
+            no_notifications: 'No new notifications',
+            
+            // Dashboard extra
+            agent_rating: 'Agent Rating',
+            requester_rating: 'Requester Rating',
+            upcoming_deadlines: 'Upcoming Deadlines',
+            ticket_statuses: 'Ticket Statuses',
+            completion_trend: 'Completion Trend (7 days)',
+            
+            // Users & Access
+            access_management: 'Access Management',
+            users_and_orgs: 'Users and Organizations',
+            add_company_short: '+ Company',
+            add_user_short: '+ User',
+            search_user_placeholder: 'Search user...',
+            all_roles: 'All roles',
+            admins: 'Admins',
+            agents: 'Agents',
+            clients: 'Clients',
+            name: 'Name',
+            organization: 'Organization',
+            time: 'Time',
+            object: 'Object',
+            ip_address: 'IP Address',
+            details: 'Details',
+            audit_description: 'History of critical actions in the system',
+            new_category: '+ Category',
+            new_article: 'New Article',
+            
+            // Tickets extra
+            all_tickets: 'All Tickets',
+            all_statuses: 'All Statuses',
+            all_priorities: 'All Priorities',
+            new_ticket_subtitle: 'Create a new technical support ticket',
+            step_basic: 'Basic',
+            step_details: 'Details',
+            step_submit: 'Submit',
+            
+            // Extra keys
+            not_selected: 'Not selected',
+            basic_info: 'Basic Information',
+            address_and_desc: 'Address and Description',
+            domain: 'Domain',
+            organization_crm: 'Organization (CRM)',
+            company_required_hint: 'For clients, organization binding is required to access shared tickets.',
+            new_user: 'New User',
+            role_client: 'Client',
+            role_agent: 'Agent',
+            role_admin: 'Administrator',
+            edit_company: 'Edit Company',
+            edit_user: 'Edit User',
+            new_password: 'New password (leave blank)',
+            
+            // Create Ticket Form
+            create_ticket: 'Create Ticket',
+            ticket_title: 'Ticket Title',
+            ticket_title_placeholder: 'Brief problem description',
+            priority_low: 'Low',
+            priority_low_desc: 'Non-critical issue',
+            priority_medium: 'Medium',
+            priority_medium_desc: 'Regular ticket',
+            priority_high: 'High',
+            priority_high_desc: 'Important issue',
+            priority_critical: 'Critical',
+            priority_critical_desc: 'Urgent!',
+            description_placeholder: 'Describe the problem in detail...',
+            schedule_for: 'Schedule for',
+            assign_agent: 'Assign Agent',
+            auto_assign: 'Auto-assign',
+            attachments: 'Attachments',
+            drop_files: 'Drag files here or',
+            select_files: 'browse',
+            max_file_size: 'Max size: 10MB',
+        },
+        
+        uz: {
+            // Navigation
+            dashboard: 'Boshqaruv paneli',
+            tickets: 'Arizalar',
+            crm: 'Kompaniyalar',
+            kb: 'Bilim bazasi',
+            new_ticket: 'Yangi ariza',
+            logout: 'Chiqish',
+            login: 'Kirish',
+            register: 'Ro\'yxatdan o\'tish',
+            users: 'Foydalanuvchilar',
+            audit: 'Audit',
+            
+            // Dashboard
+            total_tickets: 'Jami arizalar',
+            active_users: 'Xodimlar',
+            sla_compliance: 'SLA bajarilishi',
+            avg_resolution: 'O\'rtacha hal qilish',
+            recent_tickets: 'So\'nggi arizalar',
+            all: 'Barchasi',
+            new: 'Yangi',
+            in_progress: 'Jarayonda',
+            resolved: 'Hal qilingan',
+            
+            // Tickets
+            ticket_id: '№',
+            title: 'Sarlavha',
+            description: 'Tavsif',
+            priority: 'Ustuvorlik',
+            status: 'Holat',
+            created: 'Yaratildi',
+            assigned_to: 'Ijrochi',
+            actions: 'Amallar',
+            accept: 'Qabul qilish',
+            close: 'Yopish',
+            assign: 'Tayinlash',
+            rate: 'Baholash',
+            
+            // Priorities
+            low: 'Past',
+            medium: 'O\'rta',
+            high: 'Yuqori',
+            critical: 'Kritik',
+            
+            // Statuses
+            status_new: 'Yangi',
+            status_open: 'Ochiq',
+            status_in_progress: 'Jarayonda',
+            status_waiting: 'Kutilmoqda',
+            status_resolved: 'Hal qilingan',
+            status_closed: 'Yopilgan',
+            
+            // CRM
+            companies: 'Kompaniyalar',
+            new_company: 'Yangi kompaniya',
+            company_name: 'Kompaniya nomi',
+            legal_name: 'Yuridik nom',
+            inn: 'STIR',
+            industry: 'Soha',
+            phone: 'Telefon',
+            email: 'Email',
+            website: 'Veb-sayt',
+            address: 'Manzil',
+            contacts: 'Kontaktlar',
+            subscriptions: 'Obunalar',
+            employees: 'Xodimlar',
+            
+            // Industries
+            it: 'IT va texnologiyalar',
+            trade: 'Savdo',
+            manufacturing: 'Ishlab chiqarish',
+            finance: 'Moliya',
+            medicine: 'Tibbiyot',
+            education: 'Ta\'lim',
+            logistics: 'Logistika',
+            construction: 'Qurilish',
+            horeca: 'HoReCa',
+            other: 'Boshqa',
+            
+            // Actions
+            save: 'Saqlash',
+            cancel: 'Bekor qilish',
+            delete: 'O\'chirish',
+            edit: 'Tahrirlash',
+            create: 'Yaratish',
+            search: 'Qidirish',
+            filter: 'Filtr',
+            refresh: 'Yangilash',
+            
+            // Form labels
+            full_name: 'F.I.O',
+            position: 'Lavozim',
+            department: 'Bo\'lim',
+            role: 'Rol',
+            agent: 'Agent',
+            admin: 'Admin',
+            client: 'Mijoz',
+            
+            // Misc
+            loading: 'Yuklanmoqda...',
+            no_data: 'Ma\'lumot yo\'q',
+            confirm_delete: 'O\'chirish?',
+            scheduled_date: 'Rejalashtirilgan',
+            sla_timer: 'SLA taymer',
+            
+            // KB
+            search_kb: 'Bilim bazasidan qidirish...',
+            categories: 'Kategoriyalar',
+            articles: 'Maqolalar',
+            
+            // Audit
+            audit_log: 'Audit jurnali',
+            action: 'Amal',
+            date: 'Sana',
+            user: 'Foydalanuvchi',
+            
+            // Auth
+            email: 'Email',
+            password: 'Parol',
+            confirm_password: 'Parolni tasdiqlang',
+            forgot_password: 'Parolni unutdingizmi?',
+            no_account: 'Hisob yo\'qmi?',
+            has_account: 'Hisobingiz bormi?',
+            login_btn: 'Kirish',
+            register_btn: 'Ro\'yxatdan o\'tish',
+            create_account: 'Hisob yaratish',
+            register_tagline: 'Yangi hisob yarating',
+            tagline: 'Premium yordam tizimi',
+            
+            // Notifications
+            notifications: 'Bildirishnomalar',
+            mark_all_read: 'Barchasini o\'qilgan deb belgilash',
+            no_notifications: 'Yangi bildirishnomalar yo\'q',
+            
+            // Dashboard extra
+            agent_rating: 'Ijrochilar reytingi',
+            requester_rating: 'Buyurtmachilar reytingi',
+            upcoming_deadlines: 'Yaqinlashayotgan muddatlar',
+            ticket_statuses: 'Ariza holatlari',
+            completion_trend: 'Bajarilish dinamikasi (7 kun)',
+            
+            // Users & Access
+            access_management: 'Kirishni boshqarish',
+            users_and_orgs: 'Foydalanuvchilar va tashkilotlar',
+            add_company_short: '+ Tashkilot',
+            add_user_short: '+ Foydalanuvchi',
+            search_user_placeholder: 'Foydalanuvchini qidirish...',
+            all_roles: 'Barcha rollar',
+            admins: 'Administratorlar',
+            agents: 'Agentlar',
+            clients: 'Mijozlar',
+            name: 'Ism',
+            organization: 'Tashkilot',
+            time: 'Vaqt',
+            object: 'Obyekt',
+            ip_address: 'IP Manzil',
+            details: 'Tafsilotlar',
+            audit_description: 'Tizimdagi muhim harakatlar tarixi',
+            new_category: '+ Kategoriya',
+            new_article: 'Yangi maqola',
+            
+            // Tickets extra
+            all_tickets: 'Barcha arizalar',
+            all_statuses: 'Barcha holatlar',
+            all_priorities: 'Barcha ustuvorliklar',
+            new_ticket_subtitle: 'Yangi texnik yordam arizasi yarating',
+            step_basic: 'Asosiy',
+            step_details: 'Tafsilotlar',
+            step_submit: 'Yuborish',
+            
+            // Extra keys
+            not_selected: 'Tanlanmagan',
+            basic_info: 'Asosiy ma\'lumot',
+            address_and_desc: 'Manzil va tavsif',
+            domain: 'Domen',
+            organization_crm: 'Tashkilot (CRM)',
+            company_required_hint: 'Mijozlar uchun umumiy arizalarga kirish uchun tashkilotga bog\'lash majburiy.',
+            new_user: 'Yangi foydalanuvchi',
+            role_client: 'Mijoz',
+            role_agent: 'Agent',
+            role_admin: 'Administrator',
+            edit_company: 'Tashkilotni tahrirlash',
+            edit_user: 'Foydalanuvchini tahrirlash',
+            new_password: 'Yangi parol (bo\'sh qoldiring)',
+            
+            // Create Ticket Form
+            create_ticket: 'Ariza yaratish',
+            ticket_title: 'Ariza sarlavhasi',
+            ticket_title_placeholder: 'Muammoning qisqa tavsifi',
+            priority_low: 'Past',
+            priority_low_desc: 'Muhim emas muammo',
+            priority_medium: 'O\'rta',
+            priority_medium_desc: 'Oddiy ariza',
+            priority_high: 'Yuqori',
+            priority_high_desc: 'Muhim muammo',
+            priority_critical: 'Kritik',
+            priority_critical_desc: 'Shoshilinch!',
+            description_placeholder: 'Muammoni batafsil tavsiflang...',
+            schedule_for: 'Rejalashtirish',
+            assign_agent: 'Agent tayinlash',
+            auto_assign: 'Avtomatik',
+            attachments: 'Qo\'shimchalar',
+            drop_files: 'Fayllarni bu yerga olib keling yoki',
+            select_files: 'tanlang',
+            max_file_size: 'Maksimal hajm: 10MB',
+        }
+    },
+
+    t(key) {
+        return this.translations[this.currentLocale][key] || key;
+    },
+
+    setLocale(locale) {
+        if (this.translations[locale]) {
+            this.currentLocale = locale;
+            localStorage.setItem('locale', locale);
+            document.documentElement.lang = locale;
+            this.applyTranslations();
+            this.updateActiveFlag();
+        }
+    },
+
+    applyTranslations() {
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            const attr = el.getAttribute('data-i18n-attr');
+            if (attr === 'placeholder' || (el.tagName === 'INPUT' && el.placeholder && !attr)) {
+                el.placeholder = this.t(key);
+            } else {
+                el.textContent = this.t(key);
+            }
+        });
+        
+        // Update lang switcher
+        this.updateActiveFlag();
+    },
+    
+    updateActiveFlag() {
+        document.querySelectorAll('.btn-lang').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.lang === this.currentLocale);
+        });
+    },
+    
+    init() {
+        this.applyTranslations();
+        document.documentElement.lang = this.currentLocale;
+    }
+};
+
+window.i18n = i18n;
