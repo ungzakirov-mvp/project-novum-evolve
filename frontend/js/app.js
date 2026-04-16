@@ -144,6 +144,28 @@ function toggleSidebar() {
     document.body.classList.toggle('sidebar-collapsed');
 }
 
+function toggleMobileSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    if (sidebar) {
+        sidebar.classList.toggle('mobile-visible');
+    }
+    if (overlay) {
+        overlay.classList.toggle('mobile-visible');
+    }
+}
+
+function closeMobileSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    if (sidebar) {
+        sidebar.classList.remove('mobile-visible');
+    }
+    if (overlay) {
+        overlay.classList.remove('mobile-visible');
+    }
+}
+
 function checkAuth() {
     const token = localStorage.getItem('access_token');
     return !!token;
@@ -423,7 +445,7 @@ function filterRecentTickets(status) {
     const tickets = window.allRecentTickets || [];
     const filtered = status === 'all'
         ? tickets
-        : tickets.filter(t => t.status.toLowerCase() === status.toLowerCase());
+        : tickets.filter(t => t.status && t.status.toLowerCase() === status.toLowerCase());
 
     renderRecentTickets(filtered);
 }

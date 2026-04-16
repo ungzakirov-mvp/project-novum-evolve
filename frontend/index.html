@@ -3,10 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Service Desk - Premium Help Desk System</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='20' width='100' height='100' fill='%2300d4ff'/><text x='50' y='72' text-anchor='middle' font-size='60' fill='white' font-family='sans-serif' font-weight='bold'>SD</text></svg>">
-    <link rel="stylesheet" href="css/style.css?v=3.2.6">
+    <link rel="stylesheet" href="css/style.css?v=3.6.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -101,32 +101,36 @@
             </div>
         </div>
 
-        <!-- Main Dashboard Page (Refactored to Sidebar) -->
+        <!-- Main Dashboard Page - Top Navigation -->
         <div class="page hidden" id="dashboardPage">
+            <button class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="sidebar-overlay" onclick="closeMobileSidebar()"></div>
             <div class="app-layout">
                 <aside class="sidebar glass-card">
-                    <div class="sidebar-brand">
-                        <div class="sidebar-logo">
-                            <span class="logo-icon-small">🎫</span>
-                            <span class="sidebar-text">Service Desk</span>
-                        </div>
-                        <div class="notification-trigger" onclick="toggleNotifications()">
-                            <i class="fas fa-bell"></i>
-                            <div id="notificationBadge" class="notification-badge hidden">0</div>
-                        </div>
+                <div class="sidebar-brand">
+                    <div class="sidebar-logo">
+                        <span class="logo-icon-small">🎫</span>
+                        <span class="sidebar-text">Service Desk</span>
+                    </div>
+                    <div class="notification-trigger" onclick="toggleNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <div id="notificationBadge" class="notification-badge hidden">0</div>
+                    </div>
 
-                        <!-- Notification Dropdown -->
-                        <div id="notificationDropdown" class="glass-card notification-dropdown hidden">
-                            <div class="notif-header">
-                                <h3 data-i18n="notifications">Уведомления</h3>
-                                <button class="btn-text" onclick="markAllNotificationsAsRead()" data-i18n="mark_all_read">Все прочитано</button>
-                            </div>
-                            <div id="notificationList" class="notif-list">
-                                <p class="text-muted" style="padding: 1rem; text-align: center;" data-i18n="no_notifications">Нет новых уведомлений
-                                </p>
-                            </div>
+                    <!-- Notification Dropdown -->
+                    <div id="notificationDropdown" class="glass-card notification-dropdown hidden">
+                        <div class="notif-header">
+                            <h3 data-i18n="notifications">Уведомления</h3>
+                            <button class="btn-text" onclick="markAllNotificationsAsRead()" data-i18n="mark_all_read">Все прочитано</button>
+                        </div>
+                        <div id="notificationList" class="notif-list">
+                            <p class="text-muted" style="padding: 1rem; text-align: center;" data-i18n="no_notifications">Нет новых уведомлений
+                            </p>
                         </div>
                     </div>
+                </div>
                     <div class="sidebar-menu">
                         <a href="#" class="side-link active" data-page="dashboard">
                             <i class="fas fa-chart-line"></i> <span data-i18n="dashboard">Дашборд</span>
@@ -183,7 +187,7 @@
                         <div class="view" id="dashboardView">
                             <div class="page-header dynamic-header">
                                 <div>
-                                    <h2><i class="fas fa-tasks" style="color: var(--jarvis-cyan);"></i> Мои задачи</h2>
+                                    <h2><i class="fas fa-tasks" style="color: var(--jarvis-cyan);"></i> Система мониторинга заявок</h2>
                                     <p>Активные заявки требующие внимания <span id="lastUpdateTime" style="font-size: 0.85rem; color: var(--text-tertiary); margin-left: 1rem;"></span></p>
                                 </div>
                                 <div class="header-actions">
