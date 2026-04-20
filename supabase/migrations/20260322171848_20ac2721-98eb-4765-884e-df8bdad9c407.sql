@@ -1,1 +1,0 @@
-CREATE POLICY "Admins can read contact_requests" ON public.contact_requests FOR SELECT TO authenticated USING (public.has_role(auth.uid(), 'admin'::public.app_role));
