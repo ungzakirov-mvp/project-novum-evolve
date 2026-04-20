@@ -62,6 +62,25 @@ Deno.serve(async (req) => {
       throw new Error("Ошибка сохранения заявки");
     }
 
+    // Escape HTML to prevent injection in email body
+    const escapeHtml = (v: string) =>
+      String(v ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+
+    const safeName = escapeHtml(body.name.trim());
+    const safeCompany = escapeHtml(body.company.trim());
+    const safeEmail = escapeHtml(hasEmail ? body.email!.trim() : "—");
+    const safePhone = escapeHtml(body.phone.trim());
+    const safeMessage = body.message ? escapeHtml(body.message.trim()) : "";
+    // Subject must be plain text — strip newlines to prevent header injection
+    const safeSubject = `Новая заявка от ${body.name.trim()} — ${body.company.trim()}`
+      .replace(/[\r\n]+/g, " ")
+      .slice(0, 200);
+
     // Send notification email via Resend (if configured)
     const resendKey = Deno.env.get("RESEND_API_KEY");
     if (resendKey) {
@@ -75,14 +94,14 @@ Deno.serve(async (req) => {
           body: JSON.stringify({
             from: "Novum Tech <onboarding@resend.dev>",
             to: ["support@novumtech.uz"],
-            subject: `Новая заявка от ${body.name.trim()} — ${body.company.trim()}`,
+            subject: safeSubject,
             html: `
               <h2>Новая заявка с сайта Novum Tech</h2>
-              <p><strong>Имя:</strong> ${body.name.trim()}</p>
-              <p><strong>Компания:</strong> ${body.company.trim()}</p>
-              <p><strong>Email:</strong> ${body.email.trim()}</p>
-              <p><strong>Телефон:</strong> ${body.phone.trim()}</p>
-              ${body.message ? `<p><strong>Комментарий:</strong> ${body.message.trim()}</p>` : ""}
+              <p><strong>Имя:</strong> ${safeName}</p>
+              <p><strong>Компания:</strong> ${safeCompany}</p>
+              <p><strong>Email:</strong> ${safeEmail}</p>
+              <p><strong>Телефон:</strong> ${safePhone}</p>
+              ${safeMessage ? `<p><strong>Комментарий:</strong> ${safeMessage}</p>` : ""}
               <hr/>
               <p style="color:#888">Отправлено с novumtech.uz</p>
             `,
