@@ -1,9 +1,0 @@
-{
-    "name": "service-desk-frontend",
-    "version": "2.0.0",
-    "description": "Premium Service Desk Frontend",
-    "scripts": {
-        "dev": "python -m http.server 3000",
-        "preview": "python -m http.server 5173"
-    }
-}
