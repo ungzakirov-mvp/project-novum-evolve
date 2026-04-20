@@ -1,9 +1,41 @@
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function isValidEmail(email) {
+  return typeof email === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Only POST allowed' });
   }
 
-  const { name, email, phone, message } = req.body;
+  const { name, email, phone, message } = req.body || {};
+
+  // Input validation
+  if (!name || typeof name !== 'string' || name.trim().length === 0 || name.length > 200) {
+    return res.status(400).json({ error: 'Invalid name' });
+  }
+  if (!email || !isValidEmail(email) || email.length > 320) {
+    return res.status(400).json({ error: 'Invalid email' });
+  }
+  if (!phone || typeof phone !== 'string' || phone.trim().length === 0 || phone.length > 50) {
+    return res.status(400).json({ error: 'Invalid phone' });
+  }
+  if (message && (typeof message !== 'string' || message.length > 5000)) {
+    return res.status(400).json({ error: 'Invalid message' });
+  }
+
+  const safeName = escapeHtml(name.trim());
+  const safeEmail = escapeHtml(email.trim());
+  const safePhone = escapeHtml(phone.trim());
+  const safeMessage = message ? escapeHtml(message.trim()) : '';
 
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -17,10 +49,10 @@ export default async function handler(req, res) {
       subject: 'New Audit Request',
       html: `
         <h2>New Audit Request</h2>
-        <p><b>Name:</b> ${name}</p>
-        <p><b>Email:</b> ${email}</p>
-        <p><b>Phone:</b> ${phone}</p>
-        <p><b>Message:</b> ${message}</p>
+        <p><b>Name:</b> ${safeName}</p>
+        <p><b>Email:</b> ${safeEmail}</p>
+        <p><b>Phone:</b> ${safePhone}</p>
+        <p><b>Message:</b> ${safeMessage}</p>
       `
     }),
   });
